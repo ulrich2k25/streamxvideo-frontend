@@ -1,152 +1,157 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-function AuthPage() {
+const backendUrl = "https://streamxvideo-backend-production.up.railway.app";
+
+export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
-  const [message, setMessage] = useState(""); 
+  const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
   const [videos, setVideos] = useState([]);
 
-  const backendUrl = "https://streamxvideo-backend-production.up.railway.app"; 
-
-  // 📌 Charger les vidéos depuis MySQL
+  // 📅 Charger les vidéos au chargement
   useEffect(() => {
     axios.get(`${backendUrl}/api/videos`)
-      .then(response => setVideos(response.data))
-      .catch(error => console.error("Erreur lors du chargement des vidéos :", error));
+      .then(res => setVideos(res.data))
+      .catch(() => setMessage("Erreur lors du chargement des vidéos."));
 
-    const queryParams = new URLSearchParams(window.location.search);
-    const messageFromURL = queryParams.get("message");
-    if (messageFromURL) {
-      setMessage(decodeURIComponent(messageFromURL));
-    }
+    const params = new URLSearchParams(window.location.search);
+    const msg = params.get("message");
+    if (msg) setMessage(decodeURIComponent(msg));
   }, []);
 
-  // 📌 Gérer l'authentification
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await axios.post(`${backendUrl}/api/auth`, { email, password });
-
-      if (response.data.user) {
-        setUser(response.data.user);
+      const { data } = await axios.post(`${backendUrl}/api/auth`, { email, password });
+      if (data.user) {
+        setUser(data.user);
         setMessage(isLogin ? "Connexion réussie !" : "Inscription réussie !");
       } else {
-        setMessage("Une erreur est survenue.");
+        setMessage("Erreur inconnue");
       }
-    } catch (error) {
-      console.error("Erreur d'authentification :", error);
+    } catch {
       setMessage("Email ou mot de passe incorrect.");
     }
   };
 
-  // 📌 Gérer l'abonnement avec Stripe
   const handleStripePayment = async () => {
     try {
-      const response = await axios.post(`${backendUrl}/api/payments/stripe`, { email });
-
-      if (response.data.url) {
-        window.location.href = response.data.url; 
-      } else {
-        setMessage("Échec du paiement avec Stripe.");
-      }
-    } catch (error) {
-      console.error("Erreur lors du paiement Stripe :", error);
-      setMessage("Échec du paiement avec Stripe.");
+      const { data } = await axios.post(`${backendUrl}/api/payments/stripe`, { email });
+      if (data.url) window.location.href = data.url;
+    } catch {
+      setMessage("❌ Paiement Stripe échoué.");
     }
   };
 
-  // 📌 Gérer l'abonnement avec PayPal
   const handlePayPalPayment = async () => {
     try {
-      const response = await axios.post(`${backendUrl}/api/payments/paypal`, { email });
-
-      if (response.data.url) {
-        window.location.href = response.data.url; 
-      } else {
-        setMessage("Échec du paiement avec PayPal.");
-      }
-    } catch (error) {
-      console.error("Erreur lors du paiement PayPal :", error);
-      setMessage("Échec du paiement avec PayPal.");
+      const { data } = await axios.post(`${backendUrl}/api/payments/paypal`, { email });
+      if (data.url) window.location.href = data.url;
+    } catch {
+      setMessage("❌ Paiement PayPal échoué.");
     }
   };
 
-  // 📌 Télécharger une vidéo (uniquement si abonné)
   const handleDownload = async (filePath) => {
-    if (!user || !user.isSubscribed) {
-      alert("Vous devez être abonné pour télécharger cette vidéo !");
-      return;
-    }
+    if (!user?.isSubscribed) return alert("Vous devez être abonné pour télécharger.");
 
     try {
-      const response = await axios.get(`${backendUrl}/api/videos/download?file=${filePath}`, {  
+      const res = await axios.get(`${backendUrl}/api/videos/download?file=${filePath}`, {
         headers: { "user-email": email },
         responseType: "blob",
       });
-
-      const blob = new Blob([response.data], { type: "video/mp4" });
+      const blob = new Blob([res.data], { type: "video/mp4" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = filePath.split("/").pop();
-      document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Erreur lors du téléchargement :", error);
-      alert("Téléchargement impossible !");
+    } catch {
+      alert("❌ Erreur de téléchargement");
     }
   };
 
   return (
-    <div>
-      <h1>🔥 Site de Contenu Adulte 🔥</h1>
+    <div className="max-w-3xl mx-auto p-4 text-center">
+      <h1 className="text-3xl font-bold mb-4">
+        🔥 Site de Contenu Adulte 🔥
+      </h1>
 
-      {/* 📌 Afficher le message s'il est présent */}
-      {message && <p>{message}</p>}
+      {message && <p className="mb-4 text-red-600 font-semibold">{message}</p>}
 
-      {/* 📌 Formulaire d'authentification */}
-      <form onSubmit={handleSubmit}>
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Mot de passe" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <button type="submit">{isLogin ? "Se connecter" : "S'inscrire"}</button>
+      <form onSubmit={handleSubmit} className="space-x-2 mb-2">
+        <input
+          className="border px-2 py-1"
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          className="border px-2 py-1"
+          type="password"
+          placeholder="Mot de passe"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button className="bg-blue-600 text-white px-3 py-1 rounded" type="submit">
+          {isLogin ? "Se connecter" : "S'inscrire"}
+        </button>
       </form>
 
-      {/* 📌 Basculer entre connexion et inscription */}
-      <button onClick={() => setIsLogin(!isLogin)}>
+      <button
+        onClick={() => setIsLogin(!isLogin)}
+        className="mb-4 text-sm underline text-blue-700"
+      >
         {isLogin ? "Pas encore inscrit ? Créez un compte" : "Déjà inscrit ? Connectez-vous"}
       </button>
 
-      {/* 📌 Affichage des vidéos */}
-      <h2>📺 Liste des Vidéos</h2>
-      {videos.length === 0 ? <p>Aucune vidéo disponible.</p> : (
-        <div>
+      <h2 className="text-xl font-semibold mb-2">🎪 Liste des Vidéos</h2>
+
+      {videos.length === 0 ? (
+        <p>Aucune vidéo disponible.</p>
+      ) : (
+        <div className="space-y-4">
           {videos.map((video) => (
-            <div key={video.id}>
-              <h3>{video.title}</h3>
-              <video width="320" height="240" controls>
-                <source src={video.file_path} type="video/mp4" />
+            <div key={video.id} className="border p-3 rounded shadow">
+              <h3 className="font-bold mb-1">{video.title}</h3>
+              <video controls className="mx-auto mb-2">
+                <source
+                  src={video.file_path.startsWith("http") ? video.file_path : `${backendUrl}${video.file_path}`}
+                  type="video/mp4"
+                />
               </video>
-              <button onClick={() => handleDownload(video.file_path)} disabled={!user || !user.isSubscribed}>
-                {user && user.isSubscribed ? "📥 Télécharger" : "🔒 Abonnez-vous pour télécharger"}
+              <button
+                onClick={() => handleDownload(video.file_path)}
+                className="bg-green-600 text-white px-3 py-1 rounded"
+                disabled={!user?.isSubscribed}
+              >
+                {user?.isSubscribed ? "👅 Télécharger" : "🔐 Abonnement requis"}
               </button>
             </div>
           ))}
         </div>
       )}
 
-      {/* 📌 Boutons de paiement */}
       {user && !user.isSubscribed && (
-        <div>
-          <h3>💳 Choisissez un mode de paiement :</h3>
-          <button onClick={handleStripePayment}>🚀 Payer avec Stripe</button>
-          <button onClick={handlePayPalPayment}>💸 Payer avec PayPal</button>
+        <div className="mt-6">
+          <h3 className="font-semibold mb-2">💳 Choisissez un mode de paiement :</h3>
+          <div className="space-x-2">
+            <button onClick={handleStripePayment} className="bg-purple-600 text-white px-3 py-1 rounded">
+              Payer avec Stripe
+            </button>
+            <button onClick={handlePayPalPayment} className="bg-yellow-500 text-black px-3 py-1 rounded">
+              Payer avec PayPal
+            </button>
+          </div>
         </div>
       )}
     </div>
   );
 }
 
-export default AuthPage;
+
