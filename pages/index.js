@@ -10,8 +10,8 @@ export default function AuthPage() {
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
   const [videos, setVideos] = useState([]);
+  const [showLanding, setShowLanding] = useState(true);
 
-  // 📅 Charger les vidéos au chargement
   useEffect(() => {
     axios.get(${backendUrl}/api/videos)
       .then(res => setVideos(res.data))
@@ -42,7 +42,7 @@ export default function AuthPage() {
       const { data } = await axios.post(${backendUrl}/api/payments/stripe, { email });
       if (data.url) window.location.href = data.url;
     } catch {
-      setMessage("❌ Paiement Stripe échoué.");
+      setMessage("\u274C Paiement Stripe échoué.");
     }
   };
 
@@ -51,7 +51,7 @@ export default function AuthPage() {
       const { data } = await axios.post(${backendUrl}/api/payments/paypal, { email });
       if (data.url) window.location.href = data.url;
     } catch {
-      setMessage("❌ Paiement PayPal échoué.");
+      setMessage("\u274C Paiement PayPal échoué.");
     }
   };
 
@@ -69,15 +69,28 @@ export default function AuthPage() {
       link.download = filePath.split("/").pop();
       link.click();
     } catch {
-      alert("❌ Erreur de téléchargement");
+      alert("\u274C Erreur de téléchargement");
     }
   };
 
+  if (showLanding) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4 text-center">
+        <h1 className="text-4xl font-bold mb-4">Bienvenue sur StreamX Video</h1>
+        <p className="max-w-xl mb-6 text-lg">Une plateforme exclusive pour adultes. Abonnez-vous pour télécharger du contenu privé et sécurisé hébergé sur AWS S3.</p>
+        <button
+          onClick={() => setShowLanding(false)}
+          className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded text-lg"
+        >
+          Entrer sur le site
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-3xl mx-auto p-4 text-center">
-      <h1 className="text-3xl font-bold mb-4">
-        🔥 Site de Contenu Adulte 🔥
-      </h1>
+      <h1 className="text-3xl font-bold mb-4">\uD83D\uDD25 Site de Contenu Adulte \uD83D\uDD25</h1>
 
       {message && <p className="mb-4 text-red-600 font-semibold">{message}</p>}
 
@@ -110,7 +123,7 @@ export default function AuthPage() {
         {isLogin ? "Pas encore inscrit ? Créez un compte" : "Déjà inscrit ? Connectez-vous"}
       </button>
 
-      <h2 className="text-xl font-semibold mb-2">🎪 Liste des Vidéos</h2>
+      <h2 className="text-xl font-semibold mb-2">\uD83C\uDFAA Liste des Vidéos</h2>
 
       {videos.length === 0 ? (
         <p>Aucune vidéo disponible.</p>
@@ -130,7 +143,7 @@ export default function AuthPage() {
                 className="bg-green-600 text-white px-3 py-1 rounded"
                 disabled={!user?.isSubscribed}
               >
-                {user?.isSubscribed ? "👅 Télécharger" : "🔐 Abonnement requis"}
+                {user?.isSubscribed ? "\uD83D\uDCC5 Télécharger" : "\uD83D\uDD10 Abonnement requis"}
               </button>
             </div>
           ))}
@@ -139,7 +152,7 @@ export default function AuthPage() {
 
       {user && !user.isSubscribed && (
         <div className="mt-6">
-          <h3 className="font-semibold mb-2">💳 Choisissez un mode de paiement :</h3>
+          <h3 className="font-semibold mb-2">\uD83D\uDCB3 Choisissez un mode de paiement :</h3>
           <div className="space-x-2">
             <button onClick={handleStripePayment} className="bg-purple-600 text-white px-3 py-1 rounded">
               Payer avec Stripe
