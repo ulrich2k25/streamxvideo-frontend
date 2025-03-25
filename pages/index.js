@@ -13,7 +13,7 @@ export default function AuthPage() {
   const [showLanding, setShowLanding] = useState(true);
 
   useEffect(() => {
-    axios.get(${backendUrl}/api/videos)
+    axios.get(`${backendUrl}/api/videos`)
       .then(res => setVideos(res.data))
       .catch(() => setMessage("Erreur lors du chargement des vidéos."));
 
@@ -25,7 +25,7 @@ export default function AuthPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(${backendUrl}/api/auth, { email, password });
+      const { data } = await axios.post(`${backendUrl}/api/auth`, { email, password });
       if (data.user) {
         setUser(data.user);
         setMessage(isLogin ? "Connexion réussie !" : "Inscription réussie !");
@@ -39,19 +39,19 @@ export default function AuthPage() {
 
   const handleStripePayment = async () => {
     try {
-      const { data } = await axios.post(${backendUrl}/api/payments/stripe, { email });
+      const { data } = await axios.post(`${backendUrl}/api/payments/stripe`, { email });
       if (data.url) window.location.href = data.url;
     } catch {
-      setMessage("\u274C Paiement Stripe échoué.");
+      setMessage("❌ Paiement Stripe échoué.");
     }
   };
 
   const handlePayPalPayment = async () => {
     try {
-      const { data } = await axios.post(${backendUrl}/api/payments/paypal, { email });
+      const { data } = await axios.post(`${backendUrl}/api/payments/paypal`, { email });
       if (data.url) window.location.href = data.url;
     } catch {
-      setMessage("\u274C Paiement PayPal échoué.");
+      setMessage("❌ Paiement PayPal échoué.");
     }
   };
 
@@ -59,7 +59,7 @@ export default function AuthPage() {
     if (!user?.isSubscribed) return alert("Vous devez être abonné pour télécharger.");
 
     try {
-      const res = await axios.get(${backendUrl}/api/videos/download?file=${filePath}, {
+      const res = await axios.get(`${backendUrl}/api/videos/download?file=${filePath}`, {
         headers: { "user-email": email },
         responseType: "blob",
       });
@@ -69,7 +69,7 @@ export default function AuthPage() {
       link.download = filePath.split("/").pop();
       link.click();
     } catch {
-      alert("\u274C Erreur de téléchargement");
+      alert("❌ Erreur de téléchargement");
     }
   };
 
@@ -90,7 +90,7 @@ export default function AuthPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-4 text-center">
-      <h1 className="text-3xl font-bold mb-4">\uD83D\uDD25 Site de Contenu Adulte \uD83D\uDD25</h1>
+      <h1 className="text-3xl font-bold mb-4">🔥 Site de Contenu Adulte 🔥</h1>
 
       {message && <p className="mb-4 text-red-600 font-semibold">{message}</p>}
 
@@ -123,7 +123,7 @@ export default function AuthPage() {
         {isLogin ? "Pas encore inscrit ? Créez un compte" : "Déjà inscrit ? Connectez-vous"}
       </button>
 
-      <h2 className="text-xl font-semibold mb-2">\uD83C\uDFAA Liste des Vidéos</h2>
+      <h2 className="text-xl font-semibold mb-2">🎪 Liste des Vidéos</h2>
 
       {videos.length === 0 ? (
         <p>Aucune vidéo disponible.</p>
@@ -134,7 +134,7 @@ export default function AuthPage() {
               <h3 className="font-bold mb-1">{video.title}</h3>
               <video controls className="mx-auto mb-2">
                 <source
-                  src={video.file_path.startsWith("http") ? video.file_path : ${backendUrl}${video.file_path}}
+                  src={video.file_path.startsWith("http") ? video.file_path : `${backendUrl}${video.file_path}`}
                   type="video/mp4"
                 />
               </video>
@@ -143,7 +143,7 @@ export default function AuthPage() {
                 className="bg-green-600 text-white px-3 py-1 rounded"
                 disabled={!user?.isSubscribed}
               >
-                {user?.isSubscribed ? "\uD83D\uDCC5 Télécharger" : "\uD83D\uDD10 Abonnement requis"}
+                {user?.isSubscribed ? "📥 Télécharger" : "🔐 Abonnement requis"}
               </button>
             </div>
           ))}
@@ -152,7 +152,7 @@ export default function AuthPage() {
 
       {user && !user.isSubscribed && (
         <div className="mt-6">
-          <h3 className="font-semibold mb-2">\uD83D\uDCB3 Choisissez un mode de paiement :</h3>
+          <h3 className="font-semibold mb-2">💳 Choisissez un mode de paiement :</h3>
           <div className="space-x-2">
             <button onClick={handleStripePayment} className="bg-purple-600 text-white px-3 py-1 rounded">
               Payer avec Stripe
