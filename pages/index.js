@@ -10,8 +10,8 @@ export default function AuthPage() {
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
   const [videos, setVideos] = useState([]);
-  const [showLanding, setShowLanding] = useState(true);
 
+  // 📅 Charger les vidéos au chargement
   useEffect(() => {
     axios.get(${backendUrl}/api/videos)
       .then(res => setVideos(res.data))
@@ -73,26 +73,11 @@ export default function AuthPage() {
     }
   };
 
-  if (showLanding) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4 text-center">
-        <h1 className="text-4xl font-bold mb-4">Bienvenue sur StreamX Video</h1>
-        <p className="max-w-xl mb-6 text-lg">
-          Une plateforme exclusive pour adultes. Abonnez-vous pour télécharger du contenu privé et sécurisé hébergé sur AWS S3.
-        </p>
-        <button
-          onClick={() => setShowLanding(false)}
-          className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded text-lg"
-        >
-          Entrer sur le site
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-3xl mx-auto p-4 text-center">
-      <h1 className="text-3xl font-bold mb-4">🔥 Site de Contenu Adulte 🔥</h1>
+      <h1 className="text-3xl font-bold mb-4">
+        🔥 Site de Contenu Adulte 🔥
+      </h1>
 
       {message && <p className="mb-4 text-red-600 font-semibold">{message}</p>}
 
@@ -145,7 +130,7 @@ export default function AuthPage() {
                 className="bg-green-600 text-white px-3 py-1 rounded"
                 disabled={!user?.isSubscribed}
               >
-                {user?.isSubscribed ? "📥 Télécharger" : "🔐 Abonnement requis"}
+                {user?.isSubscribed ? "👅 Télécharger" : "🔐 Abonnement requis"}
               </button>
             </div>
           ))}
