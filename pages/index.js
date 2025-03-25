@@ -77,7 +77,9 @@ export default function AuthPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4 text-center">
         <h1 className="text-4xl font-bold mb-4">Bienvenue sur StreamX Video</h1>
-        <p className="max-w-xl mb-6 text-lg">Une plateforme exclusive pour adultes. Abonnez-vous pour télécharger du contenu privé et sécurisé hébergé sur AWS S3.</p>
+        <p className="max-w-xl mb-6 text-lg">
+          Une plateforme exclusive pour adultes. Abonnez-vous pour télécharger du contenu privé et sécurisé hébergé sur AWS S3.
+        </p>
         <button
           onClick={() => setShowLanding(false)}
           className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded text-lg"
@@ -166,4 +168,3 @@ export default function AuthPage() {
     </div>
   );
 }
-
