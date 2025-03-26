@@ -125,30 +125,40 @@ export default function AuthPage() {
 
       <h2 className="text-xl font-semibold mb-2">🎪 Liste des Vidéos</h2>
 
-      {videos.length === 0 ? (
-        <p>Aucune vidéo disponible.</p>
-      ) : (
-        <div className="space-y-4">
-          {videos.map((video) => (
-            <div key={video.id} className="border p-3 rounded shadow">
-              <h3 className="font-bold mb-1">{video.title}</h3>
-              <video controls className="mx-auto mb-2">
-                <source
-                  src={video.file_path.startsWith("http") ? video.file_path : `${backendUrl}${video.file_path}`}
-                  type="video/mp4"
-                />
-              </video>
-              <button
-                onClick={() => handleDownload(video.file_path)}
-                className="bg-green-600 text-white px-3 py-1 rounded"
-                disabled={!user?.isSubscribed}
-              >
-                {user?.isSubscribed ? "📥 Télécharger" : "🔐 Abonnement requis"}
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+     {videos.length === 0 ? (
+  <p>Aucune vidéo disponible.</p>
+) : (
+  <div className="space-y-4">
+    {videos.map((video) => (
+      <div key={video.id} className="border p-3 rounded shadow">
+        <h3 className="font-bold mb-2">{video.title}</h3>
+
+        <video
+          controls
+          className="mx-auto mb-2 w-full max-w-md rounded-md shadow-md"
+        >
+          <source
+            src={
+              video.file_path.startsWith("http")
+                ? video.file_path
+                : `${backendUrl}${video.file_path}`
+            }
+            type="video/mp4"
+          />
+        </video>
+
+        <button
+          onClick={() => handleDownload(video.file_path)}
+          className="bg-green-600 text-white px-3 py-1 rounded"
+          disabled={!user?.isSubscribed}
+        >
+          {user?.isSubscribed ? "📥 Télécharger" : "🔐 Abonnement requis"}
+        </button>
+      </div>
+    ))}
+  </div>
+)}
+
 
       {user && !user.isSubscribed && (
         <div className="mt-6">
