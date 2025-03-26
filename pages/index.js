@@ -134,18 +134,15 @@ export default function AuthPage() {
         <h3 className="font-bold mb-2">{video.title}</h3>
 
         <video
-          controls
-          className="mx-auto mb-2 w-full max-w-md rounded-md shadow-md"
-        >
-          <source
-            src={
-              video.file_path.startsWith("http")
-                ? video.file_path
-                : `${backendUrl}${video.file_path}`
-            }
-            type="video/mp4"
-          />
-        </video>
+  controls
+  className="mx-auto mb-2 max-w-full w-[360px] rounded shadow-md"
+>
+  <source
+    src={video.file_path.startsWith("http") ? video.file_path : `${backendUrl}${video.file_path}`}
+    type="video/mp4"
+  />
+</video>
+
 
         <button
           onClick={() => handleDownload(video.file_path)}
