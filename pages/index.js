@@ -1,4 +1,3 @@
-// frontend/pages/index.js (ou AuthPage.js)
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -55,7 +54,6 @@ export default function AuthPage() {
 
   const handleDownload = async (filePath) => {
     if (!user?.isSubscribed) return alert("Vous devez être abonné pour télécharger.");
-
     try {
       const res = await axios.get(`${backendUrl}/api/videos/download?file=${filePath}`, {
         headers: { "user-email": email },
@@ -71,71 +69,65 @@ export default function AuthPage() {
     }
   };
 
-  // Page d’accueil (non connecté)
+  // 🔒 PAGE D'ACCUEIL
   if (!user) {
     const teaser = videos[teaserIndex];
 
     return (
-     <nav className="bg-zinc-900 border-b border-zinc-700 px-4 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-  <div className="text-center md:text-left">
-    <h1 className="text-3xl font-bold text-red-500">🔥 StreamX Video</h1>
-    <p className="text-sm text-zinc-400 hidden md:block">Accès réservé aux membres</p>
-  </div>
+      <div className="min-h-screen bg-zinc-900 text-white flex flex-col items-center justify-center p-6">
+        {teaser && (
+          <video
+            src={teaser.file_path}
+            autoPlay
+            muted
+            loop={false}
+            playsInline
+            className="w-[320px] md:w-[480px] rounded shadow mb-6"
+          />
+        )}
 
-  <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-2 items-center">
-    <input
-      className="px-3 py-2 rounded bg-zinc-800 border border-zinc-600 focus:outline-none text-white"
-      type="email"
-      placeholder="Email"
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
-      required
-    />
-    <input
-      className="px-3 py-2 rounded bg-zinc-800 border border-zinc-600 focus:outline-none text-white"
-      type="password"
-      placeholder="Mot de passe"
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-      required
-    />
-    <button
-      type="submit"
-      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-semibold"
-    >
-      {isLogin ? "Se connecter" : "S'inscrire"}
-    </button>
-  </form>
-</nav>
-
-
-        <div className="flex flex-col items-center justify-center p-6">
-          {teaser && (
-            <video
-              src={teaser.file_path}
-              autoPlay
-              muted
-              loop={false}
-              playsInline
-              className="w-[320px] md:w-[480px] rounded shadow mb-6"
-            />
-          )}
-          <p className="text-center text-zinc-300 max-w-md">
-            Découvrez un univers exclusif pour adultes. Inscrivez-vous pour accéder aux contenus privés.
+        <div className="bg-zinc-800 p-6 rounded shadow-md w-full max-w-md">
+          <h1 className="text-2xl font-bold text-center mb-2 text-red-500">StreamX Video</h1>
+          <p className="text-center text-zinc-300 mb-4">
+            Découvrez un univers privé pour adultes. Créez un compte ou connectez-vous.
           </p>
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <input
+              type="email"
+              placeholder="Email"
+              className="px-3 py-2 rounded bg-zinc-700 border border-zinc-600"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Mot de passe"
+              className="px-3 py-2 rounded bg-zinc-700 border border-zinc-600"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button type="submit" className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+              {isLogin ? "Se connecter" : "S'inscrire"}
+            </button>
+          </form>
+
           <button
             onClick={() => setIsLogin(!isLogin)}
-            className="mt-4 text-sm underline text-zinc-400"
+            className="mt-4 text-sm text-zinc-400 underline text-center"
           >
             {isLogin ? "Pas encore inscrit ?" : "Déjà inscrit ?"}
           </button>
-          {message && <p className="text-red-500 mt-4">{message}</p>}
+
+          {message && <p className="text-red-500 text-center mt-4">{message}</p>}
         </div>
       </div>
     );
   }
 
-  // Page vidéos (après connexion)
+  // ✅ PAGE DES VIDÉOS
   return (
     <div className="min-h-screen bg-zinc-900 text-white p-4">
       <h2 className="text-3xl font-bold mb-6 text-center">🎬 Vidéos Premium</h2>
