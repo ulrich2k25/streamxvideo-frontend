@@ -12,7 +12,6 @@ export default function AuthPage() {
   const [videos, setVideos] = useState([]);
   const [teaserIndex, setTeaserIndex] = useState(0);
 
-  // 🔄 Charger vidéos + message dans l'URL
   useEffect(() => {
     axios.get(`${backendUrl}/api/videos`)
       .then(res => {
@@ -29,7 +28,6 @@ export default function AuthPage() {
     if (emailParam) setEmail(decodeURIComponent(emailParam));
   }, []);
 
-  // 🔐 Connexion / inscription
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -45,7 +43,6 @@ export default function AuthPage() {
     }
   };
 
-  // 💸 Paiement PayPal
   const handlePayPalPayment = async () => {
     try {
       const { data } = await axios.post(`${backendUrl}/api/payments/paypal`, { email });
@@ -55,7 +52,6 @@ export default function AuthPage() {
     }
   };
 
-  // 📥 Téléchargement vidéo (si abonné)
   const handleDownload = async (filePath) => {
     if (!user?.isSubscribed) return alert("Vous devez être abonné pour télécharger.");
 
@@ -74,31 +70,32 @@ export default function AuthPage() {
     }
   };
 
-  // 🎬 Page d’accueil si non connecté
+  // 🔒 PAGE D'ACCUEIL - utilisateur non connecté
   if (!user) {
     const teaser = videos[teaserIndex];
 
     return (
-      <div className="min-h-screen bg-zinc-900 text-white flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-zinc-900 text-white flex flex-col items-center justify-center p-6">
         {teaser && (
           <video
             src={teaser.file_path}
             autoPlay
             muted
+            loop
             playsInline
-            loop={false}
-            className="w-[320px] md:w-[480px] h-auto mb-6 rounded shadow-lg"
-            onEnded={() => {}}
+            className="w-[320px] md:w-[500px] h-auto mb-6 rounded shadow-lg"
           />
         )}
-        <h1 className="text-4xl font-bold mb-3">Bienvenue sur <span className="text-red-500">StreamX Video</span></h1>
-        <p className="text-md mb-6 text-zinc-300 max-w-xl text-center">
+        <h1 className="text-4xl font-bold mb-3 text-center">
+          Bienvenue sur <span className="text-red-500">StreamX Video</span>
+        </h1>
+        <p className="text-md text-zinc-300 mb-6 max-w-xl text-center">
           Découvrez un univers exclusif pour adultes. Abonnez-vous pour accéder à tous les contenus privés.
         </p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-2 mb-3 items-center">
+        <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-3 mb-3 items-center">
           <input
-            className="px-4 py-2 rounded bg-zinc-800 border border-zinc-700 focus:outline-none"
+            className="px-4 py-2 rounded bg-zinc-800 border border-zinc-700 w-64 focus:outline-none"
             type="email"
             placeholder="Email"
             value={email}
@@ -106,14 +103,17 @@ export default function AuthPage() {
             required
           />
           <input
-            className="px-4 py-2 rounded bg-zinc-800 border border-zinc-700 focus:outline-none"
+            className="px-4 py-2 rounded bg-zinc-800 border border-zinc-700 w-64 focus:outline-none"
             type="password"
             placeholder="Mot de passe"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit" className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white">
+          <button
+            type="submit"
+            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white"
+          >
             {isLogin ? "Se connecter" : "S'inscrire"}
           </button>
         </form>
@@ -124,32 +124,45 @@ export default function AuthPage() {
         >
           {isLogin ? "Pas encore inscrit ? Créez un compte" : "Déjà inscrit ? Connectez-vous"}
         </button>
+
         {message && <p className="text-red-500 mt-4">{message}</p>}
       </div>
     );
   }
 
-  // 🎥 Page vidéos
+  // 🔓 PAGE VIDÉOS - utilisateur connecté
   return (
     <div className="min-h-screen bg-zinc-900 text-white p-4">
       <h2 className="text-2xl font-bold mb-6 text-center">🎬 Vidéos Premium</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {videos.map((video) => (
-          <div key={video.id} className="relative group bg-zinc-800 rounded overflow-hidden shadow-lg">
-            <video
-              className={`w-full h-48 object-cover ${
-                user.isSubscribed ? "" : "blur-md grayscale"
-              }`}
-              muted
-              playsInline
-              controls={user.isSubscribed}
-              onClick={() => {
-                if (!user.isSubscribed) handlePayPalPayment();
-              }}
-            >
-              <source src={video.file_path} type="video/mp4" />
-            </video>
+          <div
+            key={video.id}
+            className="relative group bg-zinc-800 rounded overflow-hidden shadow-lg"
+          >
+            <div className="relative">
+              <video
+                className={`w-full h-48 object-cover transition-all duration-300 cursor-pointer ${
+                  user.isSubscribed ? "" : "blur-md grayscale group-hover:blur-none"
+                }`}
+                muted
+                playsInline
+                controls={user.isSubscribed}
+                onClick={() => {
+                  if (!user.isSubscribed) handlePayPalPayment();
+                }}
+              >
+                <source src={video.file_path} type="video/mp4" />
+              </video>
+              {!user.isSubscribed && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <p className="bg-black/70 text-white px-3 py-1 rounded text-sm font-semibold">
+                    🔐 Abonnement requis
+                  </p>
+                </div>
+              )}
+            </div>
             <div className="p-3">
               <h3 className="text-md font-semibold mb-2">{video.title}</h3>
               <button
@@ -169,18 +182,18 @@ export default function AuthPage() {
       </div>
 
       {!user.isSubscribed && (
-        <div className="text-center mt-8">
-          <h4 className="font-semibold mb-2">🔐 Abonnement 1 mois - 5€</h4>
+        <div className="text-center mt-10">
+          <h4 className="font-semibold mb-3 text-lg">💳 Abonnement 1 mois - 5€</h4>
           <button
             onClick={handlePayPalPayment}
-            className="bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-500"
+            className="bg-yellow-400 text-black px-5 py-2 rounded hover:bg-yellow-500 font-semibold"
           >
             Payer avec PayPal
           </button>
         </div>
       )}
 
-      {message && <p className="text-red-500 text-center mt-4">{message}</p>}
+      {message && <p className="text-red-500 text-center mt-6">{message}</p>}
     </div>
   );
 }
