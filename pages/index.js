@@ -166,9 +166,6 @@ export default function AuthPage() {
         <div className="mt-6">
           <h3 className="font-semibold mb-2">💳 Choisissez un mode de paiement :</h3>
           <div className="space-x-2">
-            <button onClick={handleStripePayment} className="bg-purple-600 text-white px-3 py-1 rounded">
-              Payer avec Stripe
-            </button>
             <button onClick={handlePayPalPayment} className="bg-yellow-500 text-black px-3 py-1 rounded">
               Payer avec PayPal
             </button>
