@@ -1,3 +1,4 @@
+// frontend/pages/index.js (ou AuthPage.js)
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -70,127 +71,106 @@ export default function AuthPage() {
     }
   };
 
-  // === PAGE D’ACCUEIL ===
+  // Page d’accueil (non connecté)
   if (!user) {
     const teaser = videos[teaserIndex];
 
     return (
-      <div className="min-h-screen bg-zinc-900 text-white flex flex-col items-center justify-center p-4">
-        {teaser && (
-          <video
-            src={teaser.file_path}
-            autoPlay
-            muted
-            playsInline
-            loop={false}
-            className="w-[320px] md:w-[480px] h-auto mb-6 rounded shadow-lg"
-          />
-        )}
-        <h1 className="text-4xl font-bold mb-3">
-          Bienvenue sur <span className="text-red-500">StreamX Video</span>
-        </h1>
-        <p className="text-md mb-6 text-zinc-300 max-w-xl text-center">
-          Découvrez un univers exclusif pour adultes. Abonnez-vous pour accéder à tous les contenus privés.
-        </p>
+      <div className="min-h-screen bg-zinc-900 text-white flex flex-col">
+        {/* Barre de navigation */}
+        <nav className="flex justify-between items-center px-4 py-3 border-b border-zinc-700">
+          <h1 className="text-2xl font-bold text-red-500">StreamX Video</h1>
+          <form onSubmit={handleSubmit} className="flex gap-2 items-center">
+            <input
+              className="px-3 py-1 rounded bg-zinc-800 border border-zinc-600"
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              className="px-3 py-1 rounded bg-zinc-800 border border-zinc-600"
+              type="password"
+              placeholder="Mot de passe"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button type="submit" className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded">
+              {isLogin ? "Se connecter" : "S'inscrire"}
+            </button>
+          </form>
+        </nav>
 
-        <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-2 mb-3 items-center">
-          <input
-            className="px-4 py-2 rounded bg-zinc-800 border border-zinc-700 focus:outline-none"
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            className="px-4 py-2 rounded bg-zinc-800 border border-zinc-700 focus:outline-none"
-            type="password"
-            placeholder="Mot de passe"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button type="submit" className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white">
-            {isLogin ? "Se connecter" : "S'inscrire"}
+        <div className="flex flex-col items-center justify-center p-6">
+          {teaser && (
+            <video
+              src={teaser.file_path}
+              autoPlay
+              muted
+              loop={false}
+              playsInline
+              className="w-[320px] md:w-[480px] rounded shadow mb-6"
+            />
+          )}
+          <p className="text-center text-zinc-300 max-w-md">
+            Découvrez un univers exclusif pour adultes. Inscrivez-vous pour accéder aux contenus privés.
+          </p>
+          <button
+            onClick={() => setIsLogin(!isLogin)}
+            className="mt-4 text-sm underline text-zinc-400"
+          >
+            {isLogin ? "Pas encore inscrit ?" : "Déjà inscrit ?"}
           </button>
-        </form>
-
-        <button
-          onClick={() => setIsLogin(!isLogin)}
-          className="text-sm underline text-zinc-400 hover:text-white"
-        >
-          {isLogin ? "Pas encore inscrit ? Créez un compte" : "Déjà inscrit ? Connectez-vous"}
-        </button>
-
-        {message && <p className="text-red-500 mt-4">{message}</p>}
+          {message && <p className="text-red-500 mt-4">{message}</p>}
+        </div>
       </div>
     );
   }
 
-  // === PAGE VIDÉOS APRÈS CONNEXION ===
+  // Page vidéos (après connexion)
   return (
     <div className="min-h-screen bg-zinc-900 text-white p-4">
-      <h2 className="text-2xl font-bold mb-6 text-center">🎬 Vidéos Premium</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center">🎬 Vidéos Premium</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {videos.map((video) => (
-          <div key={video.id} className="relative group bg-zinc-800 rounded overflow-hidden shadow-lg">
-            <div className="relative">
-              <video
-                className={`w-full h-48 object-cover transition-all duration-300 cursor-pointer ${
-                  user.isSubscribed ? "" : "blur-md grayscale group-hover:blur-none"
-                }`}
-                muted
-                playsInline
-                controls={user.isSubscribed}
-                onClick={() => {
-                  if (!user.isSubscribed) handlePayPalPayment();
-                }}
-              >
-                <source src={video.file_path} type="video/mp4" />
-              </video>
-
-              {!user.isSubscribed && (
-                <div
-                  onClick={handlePayPalPayment}
-                  className="absolute inset-0 flex items-center justify-center bg-black/60 cursor-pointer hover:bg-black/70 transition"
-                >
-                  <p className="text-white font-semibold bg-red-600 px-4 py-2 rounded shadow hover:bg-red-700">
-                    🔒 Abonnement requis
-                  </p>
-                </div>
-              )}
-            </div>
-
+          <div key={video.id} className="bg-zinc-800 rounded overflow-hidden shadow">
+            <video
+              className={`w-full h-48 object-cover transition duration-300 ${
+                user.isSubscribed ? "" : "blur-md grayscale"
+              }`}
+              muted
+              playsInline
+              controls={user.isSubscribed}
+              onClick={() => {
+                if (!user.isSubscribed) handlePayPalPayment();
+              }}
+            >
+              <source src={video.file_path} type="video/mp4" />
+            </video>
             <div className="p-3">
-              <h3 className="text-md font-semibold mb-2">{video.title}</h3>
-              <button
-                onClick={() => handleDownload(video.file_path)}
-                className={`w-full py-2 rounded ${
-                  user.isSubscribed
-                    ? "bg-green-600 text-white"
-                    : "bg-zinc-600 text-gray-400 cursor-not-allowed"
-                }`}
-                disabled={!user.isSubscribed}
-              >
-                {user.isSubscribed ? "📥 Télécharger" : "🔒 Abonnement requis"}
-              </button>
+              <h3 className="font-semibold text-md mb-2">{video.title}</h3>
+              {!user.isSubscribed ? (
+                <button
+                  onClick={handlePayPalPayment}
+                  className="w-full bg-yellow-500 text-black font-bold py-2 rounded hover:bg-yellow-600"
+                >
+                  🔒 Abonnement requis - 5€
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleDownload(video.file_path)}
+                  className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+                >
+                  📥 Télécharger
+                </button>
+              )}
             </div>
           </div>
         ))}
       </div>
-
-      {!user.isSubscribed && (
-        <div className="text-center mt-8">
-          <h4 className="font-semibold mb-2">🔐 Abonnement 1 mois - 5€</h4>
-          <button
-            onClick={handlePayPalPayment}
-            className="bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-500"
-          >
-            Payer avec PayPal
-          </button>
-        </div>
-      )}
 
       {message && <p className="text-red-500 text-center mt-4">{message}</p>}
     </div>
