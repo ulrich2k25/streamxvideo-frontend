@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -11,9 +10,9 @@ export default function AuthPage() {
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
   const [videos, setVideos] = useState([]);
-  const [showLanding, setShowLanding] = useState(true);
   const [teaserIndex, setTeaserIndex] = useState(0);
 
+  // 🔄 Charger vidéos + message dans l'URL
   useEffect(() => {
     axios.get(`${backendUrl}/api/videos`)
       .then(res => {
@@ -25,10 +24,12 @@ export default function AuthPage() {
     const params = new URLSearchParams(window.location.search);
     const msg = params.get("message");
     const emailParam = params.get("email");
+
     if (msg) setMessage(decodeURIComponent(msg));
     if (emailParam) setEmail(decodeURIComponent(emailParam));
   }, []);
 
+  // 🔐 Connexion / inscription
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -36,7 +37,6 @@ export default function AuthPage() {
       if (data.user) {
         setUser(data.user);
         setMessage(isLogin ? "Connexion réussie !" : "Inscription réussie !");
-        setShowLanding(false);
       } else {
         setMessage("Erreur inconnue");
       }
@@ -45,6 +45,7 @@ export default function AuthPage() {
     }
   };
 
+  // 💸 Paiement PayPal
   const handlePayPalPayment = async () => {
     try {
       const { data } = await axios.post(`${backendUrl}/api/payments/paypal`, { email });
@@ -54,14 +55,10 @@ export default function AuthPage() {
     }
   };
 
-  const handleVideoClick = (video) => {
-    if (!user?.isSubscribed) {
-      handlePayPalPayment();
-    }
-  };
-
+  // 📥 Téléchargement vidéo (si abonné)
   const handleDownload = async (filePath) => {
     if (!user?.isSubscribed) return alert("Vous devez être abonné pour télécharger.");
+
     try {
       const res = await axios.get(`${backendUrl}/api/videos/download?file=${filePath}`, {
         headers: { "user-email": email },
@@ -77,112 +74,113 @@ export default function AuthPage() {
     }
   };
 
-  if (showLanding) {
+  // 🎬 Page d’accueil si non connecté
+  if (!user) {
+    const teaser = videos[teaserIndex];
+
     return (
-      <div className="relative min-h-screen bg-black text-white overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          {videos[teaserIndex] && (
-            <video
-              autoPlay
-              muted
-              loop
-              className="w-full h-full object-cover opacity-30"
-            >
-              <source src={videos[teaserIndex].file_path} type="video/mp4" />
-            </video>
-          )}
-        </div>
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 backdrop-blur-md">
-          <h1 className="text-5xl font-extrabold mb-6">Bienvenue sur <span className="text-red-500">StreamX Video</span></h1>
-          <p className="text-lg mb-6 max-w-xl text-center">
-            Découvrez un univers exclusif pour adultes. Abonnez-vous pour accéder à tous les contenus privés.
-          </p>
-          <button
-            onClick={() => setShowLanding(false)}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded text-lg mb-4"
-          >
-            Entrer sur le site
+      <div className="min-h-screen bg-zinc-900 text-white flex flex-col items-center justify-center p-4">
+        {teaser && (
+          <video
+            src={teaser.file_path}
+            autoPlay
+            muted
+            playsInline
+            loop={false}
+            className="w-[320px] md:w-[480px] h-auto mb-6 rounded shadow-lg"
+            onEnded={() => {}}
+          />
+        )}
+        <h1 className="text-4xl font-bold mb-3">Bienvenue sur <span className="text-red-500">StreamX Video</span></h1>
+        <p className="text-md mb-6 text-zinc-300 max-w-xl text-center">
+          Découvrez un univers exclusif pour adultes. Abonnez-vous pour accéder à tous les contenus privés.
+        </p>
+
+        <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-2 mb-3 items-center">
+          <input
+            className="px-4 py-2 rounded bg-zinc-800 border border-zinc-700 focus:outline-none"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            className="px-4 py-2 rounded bg-zinc-800 border border-zinc-700 focus:outline-none"
+            type="password"
+            placeholder="Mot de passe"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white">
+            {isLogin ? "Se connecter" : "S'inscrire"}
           </button>
-          <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-2">
-            <input
-              type="email"
-              placeholder="Email"
-              className="px-3 py-2 rounded bg-white text-black"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Mot de passe"
-              className="px-3 py-2 rounded bg-white text-black"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-              {isLogin ? "Se connecter" : "S'inscrire"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-blue-300 underline"
-            >
-              {isLogin ? "Pas encore inscrit ?" : "Déjà inscrit ? Connectez-vous"}
-            </button>
-          </form>
-        </div>
+        </form>
+
+        <button
+          onClick={() => setIsLogin(!isLogin)}
+          className="text-sm underline text-zinc-400 hover:text-white"
+        >
+          {isLogin ? "Pas encore inscrit ? Créez un compte" : "Déjà inscrit ? Connectez-vous"}
+        </button>
+        {message && <p className="text-red-500 mt-4">{message}</p>}
       </div>
     );
   }
 
+  // 🎥 Page vidéos
   return (
-    <div className="min-h-screen bg-[url('https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1350&q=80')] bg-cover bg-center p-6 text-white">
-      <h1 className="text-3xl font-bold text-center mb-6">🔥 Contenu Exclusif 🔥</h1>
-
-      {message && <p className="mb-4 text-center text-red-400">{message}</p>}
+    <div className="min-h-screen bg-zinc-900 text-white p-4">
+      <h2 className="text-2xl font-bold mb-6 text-center">🎬 Vidéos Premium</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {videos.map((video, index) => (
-          <div
-            key={video.id}
-            className="relative group cursor-pointer overflow-hidden rounded-lg shadow-lg"
-            onClick={() => handleVideoClick(video)}
-          >
+        {videos.map((video) => (
+          <div key={video.id} className="relative group bg-zinc-800 rounded overflow-hidden shadow-lg">
             <video
-              className={`w-full h-48 object-cover transition duration-300 ${
-                !user?.isSubscribed ? "blur-md group-hover:blur-none" : ""
+              className={`w-full h-48 object-cover ${
+                user.isSubscribed ? "" : "blur-md grayscale"
               }`}
               muted
-              loop
               playsInline
-              autoPlay
+              controls={user.isSubscribed}
+              onClick={() => {
+                if (!user.isSubscribed) handlePayPalPayment();
+              }}
             >
               <source src={video.file_path} type="video/mp4" />
             </video>
-            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2 text-sm font-semibold truncate">
-              {video.title}
+            <div className="p-3">
+              <h3 className="text-md font-semibold mb-2">{video.title}</h3>
+              <button
+                onClick={() => handleDownload(video.file_path)}
+                className={`w-full py-2 rounded ${
+                  user.isSubscribed
+                    ? "bg-green-600 text-white"
+                    : "bg-zinc-600 text-gray-400 cursor-not-allowed"
+                }`}
+                disabled={!user.isSubscribed}
+              >
+                {user.isSubscribed ? "📥 Télécharger" : "🔒 Abonnement requis"}
+              </button>
             </div>
-            {!user?.isSubscribed && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white font-bold">
-                🔐 Abonnement requis
-              </div>
-            )}
           </div>
         ))}
       </div>
 
-      {user && !user.isSubscribed && (
-        <div className="text-center mt-10">
-          <h3 className="text-lg font-semibold mb-4">Accès limité. Abonnez-vous pour tout voir :</h3>
+      {!user.isSubscribed && (
+        <div className="text-center mt-8">
+          <h4 className="font-semibold mb-2">🔐 Abonnement 1 mois - 5€</h4>
           <button
             onClick={handlePayPalPayment}
-            className="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-2 rounded"
+            className="bg-yellow-400 text-black font-semibold px-4 py-2 rounded hover:bg-yellow-500"
           >
-            Payer 5€ avec PayPal
+            Payer avec PayPal
           </button>
         </div>
       )}
+
+      {message && <p className="text-red-500 text-center mt-4">{message}</p>}
     </div>
   );
 }
