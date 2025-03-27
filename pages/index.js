@@ -89,7 +89,7 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-4 text-center">
+    <div className="max-w-5xl mx-auto p-4 text-center">
       <h1 className="text-3xl font-bold mb-4">🔥 Site de Contenu Adulte 🔥</h1>
 
       {message && <p className="mb-4 text-red-600 font-semibold">{message}</p>}
@@ -123,39 +123,35 @@ export default function AuthPage() {
         {isLogin ? "Pas encore inscrit ? Créez un compte" : "Déjà inscrit ? Connectez-vous"}
       </button>
 
-      <h2 className="text-xl font-semibold mb-2">🎪 Liste des Vidéos</h2>
+      <h2 className="text-xl font-semibold mb-4">🎬 Liste des Vidéos</h2>
 
-     {videos.length === 0 ? (
-  <p>Aucune vidéo disponible.</p>
-) : (
-  <div className="space-y-4">
-    {videos.map((video) => (
-      <div key={video.id} className="border p-3 rounded shadow">
-        <h3 className="font-bold mb-2">{video.title}</h3>
-
-        <video
-  controls
-  className="mx-auto mb-2 max-w-full w-[360px] rounded shadow-md"
->
-  <source
-    src={video.file_path.startsWith("http") ? video.file_path : `${backendUrl}${video.file_path}`}
-    type="video/mp4"
-  />
-</video>
-
-
-        <button
-          onClick={() => handleDownload(video.file_path)}
-          className="bg-green-600 text-white px-3 py-1 rounded"
-          disabled={!user?.isSubscribed}
-        >
-          {user?.isSubscribed ? "📥 Télécharger" : "🔐 Abonnement requis"}
-        </button>
-      </div>
-    ))}
-  </div>
-)}
-
+      {videos.length === 0 ? (
+        <p>Aucune vidéo disponible.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {videos.map((video) => (
+            <div key={video.id} className="border p-3 rounded shadow">
+              <h3 className="font-bold mb-2">{video.title}</h3>
+              <video
+                controls
+                className="w-full max-w-full rounded shadow-md"
+              >
+                <source
+                  src={video.file_path.startsWith("http") ? video.file_path : `${backendUrl}${video.file_path}`}
+                  type="video/mp4"
+                />
+              </video>
+              <button
+                onClick={() => handleDownload(video.file_path)}
+                className="mt-2 bg-green-600 text-white px-3 py-1 rounded w-full"
+                disabled={!user?.isSubscribed}
+              >
+                {user?.isSubscribed ? "📥 Télécharger" : "🔐 Abonnement requis"}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {user && !user.isSubscribed && (
         <div className="mt-6">
