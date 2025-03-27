@@ -76,32 +76,38 @@ export default function AuthPage() {
     const teaser = videos[teaserIndex];
 
     return (
-      <div className="min-h-screen bg-zinc-900 text-white flex flex-col">
-        {/* Barre de navigation */}
-        <nav className="flex justify-between items-center px-4 py-3 border-b border-zinc-700">
-          <h1 className="text-2xl font-bold text-red-500">StreamX Video</h1>
-          <form onSubmit={handleSubmit} className="flex gap-2 items-center">
-            <input
-              className="px-3 py-1 rounded bg-zinc-800 border border-zinc-600"
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              className="px-3 py-1 rounded bg-zinc-800 border border-zinc-600"
-              type="password"
-              placeholder="Mot de passe"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button type="submit" className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded">
-              {isLogin ? "Se connecter" : "S'inscrire"}
-            </button>
-          </form>
-        </nav>
+     <nav className="bg-zinc-900 border-b border-zinc-700 px-4 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+  <div className="text-center md:text-left">
+    <h1 className="text-3xl font-bold text-red-500">🔥 StreamX Video</h1>
+    <p className="text-sm text-zinc-400 hidden md:block">Accès réservé aux membres</p>
+  </div>
+
+  <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-2 items-center">
+    <input
+      className="px-3 py-2 rounded bg-zinc-800 border border-zinc-600 focus:outline-none text-white"
+      type="email"
+      placeholder="Email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      required
+    />
+    <input
+      className="px-3 py-2 rounded bg-zinc-800 border border-zinc-600 focus:outline-none text-white"
+      type="password"
+      placeholder="Mot de passe"
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      required
+    />
+    <button
+      type="submit"
+      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-semibold"
+    >
+      {isLogin ? "Se connecter" : "S'inscrire"}
+    </button>
+  </form>
+</nav>
+
 
         <div className="flex flex-col items-center justify-center p-6">
           {teaser && (
