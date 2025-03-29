@@ -1,3 +1,4 @@
+// frontend/pages/index.js ou AuthPage.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -69,10 +70,9 @@ export default function AuthPage() {
     }
   };
 
-  // 🔒 PAGE D'ACCUEIL
+  // 🔒 PAGE ACCUEIL AVANT LOGIN
   if (!user) {
     const teaser = videos[teaserIndex];
-
     return (
       <div className="min-h-screen bg-zinc-900 text-white flex flex-col items-center justify-center p-6">
         {teaser && (
@@ -127,10 +127,21 @@ export default function AuthPage() {
     );
   }
 
-  // ✅ PAGE DES VIDÉOS
+  // ✅ PAGE VIDÉOS APRÈS LOGIN
   return (
-    <div className="min-h-screen bg-zinc-900 text-white p-4">
-      <h2 className="text-3xl font-bold mb-6 text-center">🎬 Vidéos Premium</h2>
+    <div className="min-h-screen bg-zinc-900 text-white px-4 pb-8">
+      <h2 className="text-3xl font-bold mb-4 text-center mt-6">🎬 Vidéos Premium</h2>
+
+      {!user.isSubscribed && (
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={handlePayPalPayment}
+            className="bg-yellow-400 text-black font-bold px-6 py-3 rounded-lg hover:bg-yellow-500 shadow-md transition"
+          >
+            🎁 Accès Premium - 5€ / mois
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {videos.map((video) => (
@@ -170,7 +181,7 @@ export default function AuthPage() {
         ))}
       </div>
 
-      {message && <p className="text-red-500 text-center mt-4">{message}</p>}
+      {message && <p className="text-red-500 text-center mt-6">{message}</p>}
     </div>
   );
 }
