@@ -1,4 +1,3 @@
-// frontend/pages/index.js ou AuthPage.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -70,9 +69,10 @@ export default function AuthPage() {
     }
   };
 
-  // 🔒 PAGE ACCUEIL AVANT LOGIN
+  // 🔒 PAGE D'ACCUEIL
   if (!user) {
     const teaser = videos[teaserIndex];
+
     return (
       <div className="min-h-screen bg-zinc-900 text-white flex flex-col items-center justify-center p-6">
         {teaser && (
@@ -127,18 +127,19 @@ export default function AuthPage() {
     );
   }
 
-  // ✅ PAGE VIDÉOS APRÈS LOGIN
+  // ✅ PAGE DES VIDÉOS
   return (
-    <div className="min-h-screen bg-zinc-900 text-white px-4 pb-8">
-      <h2 className="text-3xl font-bold mb-4 text-center mt-6">🎬 Vidéos Premium</h2>
+    <div className="min-h-screen bg-zinc-900 text-white p-4">
+      <h2 className="text-3xl font-bold mb-4 text-center text-red-500">🎬 Vidéos Premium</h2>
 
+      {/* ✅ Nouveau bouton clair pour PayPal */}
       {!user.isSubscribed && (
         <div className="flex justify-center mb-6">
           <button
             onClick={handlePayPalPayment}
-            className="bg-yellow-400 text-black font-bold px-6 py-3 rounded-lg hover:bg-yellow-500 shadow-md transition"
+            className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-lg shadow-lg transition"
           >
-            🎁 Accès Premium - 5€ / mois
+            🔐 Débloquer toutes les vidéos pendant 1 mois – 5€
           </button>
         </div>
       )}
@@ -181,7 +182,8 @@ export default function AuthPage() {
         ))}
       </div>
 
-      {message && <p className="text-red-500 text-center mt-6">{message}</p>}
+      {message && <p className="text-red-500 text-center mt-6 text-lg">{message}</p>}
     </div>
   );
 }
+
