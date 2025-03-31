@@ -1,4 +1,4 @@
-// ✅ VERSION FONCTIONNELLE ET LUXUEUSE + Footer avec logo PayPal + Téléchargement corrigé
+// ✅ VERSION AMÉLIORÉE : Footer amélioré + Message temporaire + Téléchargement + Lien PayPal
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -30,6 +30,13 @@ export default function AuthPage() {
     if (emailParam) setEmail(decodeURIComponent(emailParam));
   }, []);
 
+  useEffect(() => {
+    if (message && message.toLowerCase().includes("réussie")) {
+      const timer = setTimeout(() => setMessage(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -57,7 +64,7 @@ export default function AuthPage() {
   const handleDownload = async (filePath) => {
     if (!user?.isSubscribed) return alert("Vous devez être abonné pour télécharger.");
     try {
-      const res = await axios.get(`${backendUrl}/api/videos/download?file=${encodeURIComponent(filePath)}`, {
+      const res = await axios.post(`${backendUrl}/api/videos/download`, { file: filePath }, {
         headers: { "user-email": email },
         responseType: "blob",
       });
@@ -69,7 +76,7 @@ export default function AuthPage() {
       link.click();
       link.remove();
     } catch (error) {
-      console.error("Téléchargement échoué :", error);
+      console.error("Erreur de téléchargement:", error);
       alert("❌ Erreur de téléchargement");
     }
   };
@@ -170,23 +177,28 @@ export default function AuthPage() {
         {message && <p className="text-red-500 text-center mt-6 text-lg font-semibold">{message}</p>}
       </div>
 
-      {/* ✅ FOOTER MODERNE AVEC PAYPAL */}
-      <footer className="mt-12 border-t border-zinc-700 pt-6 pb-4 text-center text-sm text-zinc-400">
+      <footer className="mt-12 bg-zinc-950 border-t border-zinc-700 pt-6 pb-4 text-center text-sm text-zinc-400">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <p>&copy; {new Date().getFullYear()} StreamX Video. Tous droits réservés.</p>
           <div className="flex items-center gap-2">
             <span>Moyen de paiement :</span>
-            <img
-              src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
-              alt="PayPal"
-              className="h-6 sm:h-8"
-            />
+            <a
+              href="https://www.paypal.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:opacity-80"
+            >
+              <img
+                src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
+                alt="PayPal"
+                className="h-6 sm:h-8"
+              />
+            </a>
           </div>
         </div>
       </footer>
     </div>
   );
 }
-
 
 
