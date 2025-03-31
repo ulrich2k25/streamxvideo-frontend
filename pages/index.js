@@ -1,9 +1,7 @@
-// ✅ VERSION FONCTIONNELLE ET LUXUEUSE
+// ✅ VERSION FONCTIONNELLE ET LUXUEUSE + Footer avec logo PayPal + Téléchargement corrigé
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-
 
 const backendUrl = "https://streamxvideo-backend-production.up.railway.app";
 
@@ -59,21 +57,23 @@ export default function AuthPage() {
   const handleDownload = async (filePath) => {
     if (!user?.isSubscribed) return alert("Vous devez être abonné pour télécharger.");
     try {
-      const res = await axios.get(`${backendUrl}/api/videos/download?file=${filePath}`, {
+      const res = await axios.get(`${backendUrl}/api/videos/download?file=${encodeURIComponent(filePath)}`, {
         headers: { "user-email": email },
         responseType: "blob",
       });
-      const blob = new Blob([res.data], { type: "video/mp4" });
+      const blob = new Blob([res.data], { type: res.headers['content-type'] || "video/mp4" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = filePath.split("/").pop();
+      document.body.appendChild(link);
       link.click();
-    } catch {
+      link.remove();
+    } catch (error) {
+      console.error("Téléchargement échoué :", error);
       alert("❌ Erreur de téléchargement");
     }
   };
 
-  // 🔒 PAGE D'ACCUEIL
   if (!user) {
     const teaser = videos[teaserIndex];
 
@@ -126,61 +126,67 @@ export default function AuthPage() {
     );
   }
 
-  // ✅ PAGE DES VIDÉOS
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white px-4 py-8">
-      <h2 className="text-4xl font-bold mb-6 text-center text-yellow-400">🎬 Vidéos Premium</h2>
+    <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white px-4 py-8 flex flex-col justify-between">
+      <div>
+        <h2 className="text-4xl font-bold mb-6 text-center text-yellow-400">🎬 Vidéos Premium</h2>
 
-      {!user.isSubscribed && (
-        <div className="flex justify-center mb-6">
-          <button
-            onClick={handlePayPalPayment}
-            className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-xl shadow-lg"
-          >
-            🔐 Débloquer l'accès 1 mois – 5€
-          </button>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-        {videos.map((video) => (
-          <div key={video.id} className="bg-zinc-800 rounded-2xl overflow-hidden shadow-xl hover:scale-105 transition">
-            <video
-              className={`w-full h-48 object-cover ${user.isSubscribed ? "" : "blur-md grayscale"}`}
-              muted
-              playsInline
-              controls={user.isSubscribed}
-              onClick={() => {
-                if (!user.isSubscribed) handlePayPalPayment();
-              }}
-            >
-              <source src={video.file_path} type="video/mp4" />
-            </video>
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2 text-yellow-300">{video.title}</h3>
-              {!user.isSubscribed ? (
-                <button
-                  onClick={handlePayPalPayment}
-                  className="w-full bg-yellow-500 text-black font-bold py-2 rounded-xl hover:bg-yellow-600"
-                >
-                  🔒 Abonnement requis
-                </button>
-              ) : (
-                <button
-                  onClick={() => handleDownload(video.file_path)}
-                  className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700"
-                >
-                  📥 Télécharger
-                </button>
-              )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+          {videos.map((video) => (
+            <div key={video.id} className="bg-zinc-800 rounded-2xl overflow-hidden shadow-xl hover:scale-105 transition">
+              <video
+                className={`w-full h-48 object-cover ${user.isSubscribed ? "" : "blur-md grayscale"}`}
+                muted
+                playsInline
+                controls={user.isSubscribed}
+                onClick={() => {
+                  if (!user.isSubscribed) handlePayPalPayment();
+                }}
+              >
+                <source src={video.file_path} type="video/mp4" />
+              </video>
+              <div className="p-4">
+                <h3 className="text-lg font-semibold mb-2 text-yellow-300">{video.title}</h3>
+                {!user.isSubscribed ? (
+                  <button
+                    onClick={handlePayPalPayment}
+                    className="w-full bg-yellow-500 text-black font-bold py-2 rounded-xl hover:bg-yellow-600"
+                  >
+                    🔒 Abonnement requis
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleDownload(video.file_path)}
+                    className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700"
+                  >
+                    📥 Télécharger
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {message && <p className="text-red-500 text-center mt-6 text-lg font-semibold">{message}</p>}
       </div>
 
-      {message && <p className="text-red-500 text-center mt-6 text-lg font-semibold">{message}</p>}
+      {/* ✅ FOOTER MODERNE AVEC PAYPAL */}
+      <footer className="mt-12 border-t border-zinc-700 pt-6 pb-4 text-center text-sm text-zinc-400">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <p>&copy; {new Date().getFullYear()} StreamX Video. Tous droits réservés.</p>
+          <div className="flex items-center gap-2">
+            <span>Moyen de paiement :</span>
+            <img
+              src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
+              alt="PayPal"
+              className="h-6 sm:h-8"
+            />
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
+
 
 
