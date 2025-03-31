@@ -1,3 +1,4 @@
+// ✅ VERSION FONCTIONNELLE ET LUXUEUSE
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -69,36 +70,32 @@ export default function AuthPage() {
     }
   };
 
-  // ✅ Page d'accueil (connexion / inscription)
+  // 🔒 PAGE D'ACCUEIL
   if (!user) {
     const teaser = videos[teaserIndex];
 
     return (
-      <div className="min-h-screen bg-black text-gold flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white flex flex-col items-center justify-center px-4 py-10 relative">
         {teaser && (
           <video
             src={teaser.file_path}
             autoPlay
             muted
-            loop={false}
+            loop
             playsInline
-            className="w-full max-w-md md:max-w-lg rounded shadow-lg mb-6"
+            className="absolute inset-0 w-full h-full object-cover blur-sm opacity-30 z-0"
           />
         )}
 
-        <div className="bg-zinc-900 border border-yellow-600 p-6 rounded shadow-xl w-full max-w-md">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-center mb-4 text-yellow-500 uppercase tracking-wide">
-            StreamX Video
-          </h1>
-          <p className="text-center text-zinc-300 mb-4">
-            Accès exclusif réservé aux membres. Inscrivez-vous pour découvrir tout le contenu.
-          </p>
+        <div className="z-10 bg-zinc-900 bg-opacity-80 p-6 rounded-2xl shadow-2xl w-full max-w-md border border-yellow-500">
+          <h1 className="text-3xl font-bold text-center mb-2 text-yellow-400">StreamX Video</h1>
+          <p className="text-center text-zinc-300 mb-4">Espace exclusif pour adultes. Connecte-toi ou inscris-toi.</p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <input
               type="email"
               placeholder="Email"
-              className="px-4 py-2 rounded bg-zinc-800 border border-yellow-500 text-white"
+              className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -106,57 +103,47 @@ export default function AuthPage() {
             <input
               type="password"
               placeholder="Mot de passe"
-              className="px-4 py-2 rounded bg-zinc-800 border border-yellow-500 text-white"
+              className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <button
-              type="submit"
-              className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-4 py-2 rounded transition"
-            >
+            <button type="submit" className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded-xl">
               {isLogin ? "Se connecter" : "S'inscrire"}
             </button>
           </form>
 
-          <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="mt-4 text-sm text-yellow-400 underline text-center"
-          >
+          <button onClick={() => setIsLogin(!isLogin)} className="mt-4 text-sm text-zinc-400 underline text-center">
             {isLogin ? "Pas encore inscrit ?" : "Déjà inscrit ?"}
           </button>
 
-          {message && <p className="text-red-500 text-center mt-4">{message}</p>}
+          {message && <p className="text-red-500 text-center mt-4 font-semibold">{message}</p>}
         </div>
       </div>
     );
   }
 
-  // ✅ Page des vidéos (abonné ou non)
+  // ✅ PAGE DES VIDÉOS
   return (
-    <div className="min-h-screen bg-black text-white p-4">
-      <h2 className="text-4xl font-bold mb-6 text-center text-yellow-400 uppercase">
-        🎬 Vidéos Premium
-      </h2>
+    <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white px-4 py-8">
+      <h2 className="text-4xl font-bold mb-6 text-center text-yellow-400">🎬 Vidéos Premium</h2>
 
       {!user.isSubscribed && (
         <div className="flex justify-center mb-6">
           <button
             onClick={handlePayPalPayment}
-            className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-6 py-3 rounded-lg shadow-lg transition"
+            className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-xl shadow-lg"
           >
-            🔐 Débloquer toutes les vidéos pendant 1 mois – 5€
+            🔐 Débloquer l'accès 1 mois – 5€
           </button>
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
         {videos.map((video) => (
-          <div key={video.id} className="bg-zinc-800 border border-yellow-700 rounded overflow-hidden shadow-xl">
+          <div key={video.id} className="bg-zinc-800 rounded-2xl overflow-hidden shadow-xl hover:scale-105 transition">
             <video
-              className={`w-full h-48 object-cover transition duration-300 ${
-                user.isSubscribed ? "" : "blur-md grayscale"
-              }`}
+              className={`w-full h-48 object-cover ${user.isSubscribed ? "" : "blur-md grayscale"}`}
               muted
               playsInline
               controls={user.isSubscribed}
@@ -167,18 +154,18 @@ export default function AuthPage() {
               <source src={video.file_path} type="video/mp4" />
             </video>
             <div className="p-4">
-              <h3 className="text-md font-semibold mb-2 text-yellow-400">{video.title}</h3>
+              <h3 className="text-lg font-semibold mb-2 text-yellow-300">{video.title}</h3>
               {!user.isSubscribed ? (
                 <button
                   onClick={handlePayPalPayment}
-                  className="w-full bg-yellow-500 text-black font-bold py-2 rounded hover:bg-yellow-600 transition"
+                  className="w-full bg-yellow-500 text-black font-bold py-2 rounded-xl hover:bg-yellow-600"
                 >
-                  🔒 Abonnement requis - 5€
+                  🔒 Abonnement requis
                 </button>
               ) : (
                 <button
                   onClick={() => handleDownload(video.file_path)}
-                  className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
+                  className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700"
                 >
                   📥 Télécharger
                 </button>
@@ -188,7 +175,7 @@ export default function AuthPage() {
         ))}
       </div>
 
-      {message && <p className="text-red-500 text-center mt-6 text-lg">{message}</p>}
+      {message && <p className="text-red-500 text-center mt-6 text-lg font-semibold">{message}</p>}
     </div>
   );
 }
