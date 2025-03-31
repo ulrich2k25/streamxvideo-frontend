@@ -1,7 +1,8 @@
 // ✅ VERSION FONCTIONNELLE ET LUXUEUSE
+import '../src/index.css';
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import './index.css';
+
 
 
 const backendUrl = "https://streamxvideo-backend-production.up.railway.app";
