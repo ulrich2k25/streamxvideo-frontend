@@ -1,4 +1,4 @@
-// ✅ VERSION AMÉLIORÉE : Footer amélioré + Message temporaire + Téléchargement + Lien PayPal
+// ✅ VERSION FINALE : Footer = bouton PayPal + Téléchargement corrigé + message auto-effacé
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -64,14 +64,9 @@ export default function AuthPage() {
   const handleDownload = async (filePath) => {
     if (!user?.isSubscribed) return alert("Vous devez être abonné pour télécharger.");
     try {
-      const res = await axios.post(`${backendUrl}/api/videos/download`, { file: filePath }, {
-        headers: { "user-email": email },
-        responseType: "blob",
-      });
-      const blob = new Blob([res.data], { type: res.headers['content-type'] || "video/mp4" });
       const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = filePath.split("/").pop();
+      link.href = filePath;
+      link.setAttribute("download", "");
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -182,18 +177,17 @@ export default function AuthPage() {
           <p>&copy; {new Date().getFullYear()} StreamX Video. Tous droits réservés.</p>
           <div className="flex items-center gap-2">
             <span>Moyen de paiement :</span>
-            <a
-              href="https://www.paypal.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:opacity-80"
+            <button
+              onClick={handlePayPalPayment}
+              className="hover:opacity-80 transition cursor-pointer"
+              title="Payer avec PayPal"
             >
               <img
                 src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
                 alt="PayPal"
                 className="h-6 sm:h-8"
               />
-            </a>
+            </button>
           </div>
         </div>
       </footer>
