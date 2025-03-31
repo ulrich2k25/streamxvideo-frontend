@@ -1,5 +1,5 @@
 // ✅ VERSION FONCTIONNELLE ET LUXUEUSE
-import '../styles/globals.css';
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
