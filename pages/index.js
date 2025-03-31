@@ -1,9 +1,10 @@
-// ✅ VERSION FINALE : Footer = bouton PayPal + Téléchargement corrigé + message auto-effacé
+// ✅ VERSION AMÉLIORÉE : session persistante + expiration automatique après 10 min
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const backendUrl = "https://streamxvideo-backend-production.up.railway.app";
+const SESSION_DURATION = 10 * 60 * 1000; // 10 minutes en ms
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
@@ -25,9 +26,20 @@ export default function AuthPage() {
     const params = new URLSearchParams(window.location.search);
     const msg = params.get("message");
     const emailParam = params.get("email");
-
     if (msg) setMessage(decodeURIComponent(msg));
     if (emailParam) setEmail(decodeURIComponent(emailParam));
+
+    // ✅ Vérifie si session active existe en localStorage
+    const saved = localStorage.getItem("userSession");
+    if (saved) {
+      const session = JSON.parse(saved);
+      if (Date.now() < session.expiresAt) {
+        setUser(session.user);
+        setEmail(session.user.email);
+      } else {
+        localStorage.removeItem("userSession");
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -44,6 +56,11 @@ export default function AuthPage() {
       if (data.user) {
         setUser(data.user);
         setMessage(isLogin ? "Connexion réussie !" : "Inscription réussie !");
+        const sessionData = {
+          user: data.user,
+          expiresAt: Date.now() + SESSION_DURATION,
+        };
+        localStorage.setItem("userSession", JSON.stringify(sessionData));
       } else {
         setMessage("Erreur inconnue");
       }
@@ -78,7 +95,6 @@ export default function AuthPage() {
 
   if (!user) {
     const teaser = videos[teaserIndex];
-
     return (
       <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white flex flex-col items-center justify-center px-4 py-10 relative">
         {teaser && (
@@ -97,22 +113,8 @@ export default function AuthPage() {
           <p className="text-center text-zinc-300 mb-4">Espace exclusif pour adultes. Connecte-toi ou inscris-toi.</p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-            <input
-              type="email"
-              placeholder="Email"
-              className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Mot de passe"
-              className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <input type="email" placeholder="Email" className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input type="password" placeholder="Mot de passe" className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none" value={password} onChange={(e) => setPassword(e.target.value)} required />
             <button type="submit" className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded-xl">
               {isLogin ? "Se connecter" : "S'inscrire"}
             </button>
@@ -150,17 +152,11 @@ export default function AuthPage() {
               <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2 text-yellow-300">{video.title}</h3>
                 {!user.isSubscribed ? (
-                  <button
-                    onClick={handlePayPalPayment}
-                    className="w-full bg-yellow-500 text-black font-bold py-2 rounded-xl hover:bg-yellow-600"
-                  >
+                  <button onClick={handlePayPalPayment} className="w-full bg-yellow-500 text-black font-bold py-2 rounded-xl hover:bg-yellow-600">
                     🔒 Abonnement requis
                   </button>
                 ) : (
-                  <button
-                    onClick={() => handleDownload(video.file_path)}
-                    className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700"
-                  >
+                  <button onClick={() => handleDownload(video.file_path)} className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700">
                     📥 Télécharger
                   </button>
                 )}
@@ -177,16 +173,8 @@ export default function AuthPage() {
           <p>&copy; {new Date().getFullYear()} StreamX Video. Tous droits réservés.</p>
           <div className="flex items-center gap-2">
             <span>Moyen de paiement :</span>
-            <button
-              onClick={handlePayPalPayment}
-              className="hover:opacity-80 transition cursor-pointer"
-              title="Payer avec PayPal"
-            >
-              <img
-                src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
-                alt="PayPal"
-                className="h-6 sm:h-8"
-              />
+            <button onClick={handlePayPalPayment} className="hover:opacity-80 transition cursor-pointer" title="Payer avec PayPal">
+              <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal" className="h-6 sm:h-8" />
             </button>
           </div>
         </div>
