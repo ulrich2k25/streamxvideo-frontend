@@ -203,8 +203,6 @@ export default function AuthPage() {
         {message && <p className="text-red-500 text-center mt-6 text-lg font-semibold">{message}</p>}
       </div>
 
-      // ... tout ton code reste inchangé jusqu'à la fin
-
 <footer className="mt-12 bg-zinc-950 border-t border-zinc-700 pt-6 pb-4 text-center text-sm text-zinc-400">
   <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
     <p>&copy; {new Date().getFullYear()} StreamX Video. Tous droits réservés.</p>
