@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const backendUrl = "https://streamxvideo-backend-production.up.railway.app";
-const SESSION_DURATION = 10 * 60 * 1000; // 10 minutes
+const SESSION_DURATION = 10 * 60 * 1000;
+const VIDEOS_PER_PAGE = 20;
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
@@ -14,11 +15,8 @@ export default function AuthPage() {
   const [teaserIndex, setTeaserIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const videosPerPage = 20;
-  const indexOfLastVideo = currentPage * videosPerPage;
-  const indexOfFirstVideo = indexOfLastVideo - videosPerPage;
-  const currentVideos = videos.slice(indexOfFirstVideo, indexOfLastVideo);
-  const totalPages = Math.ceil(videos.length / videosPerPage);
+  const totalPages = Math.ceil(videos.length / VIDEOS_PER_PAGE);
+  const paginatedVideos = videos.slice((currentPage - 1) * VIDEOS_PER_PAGE, currentPage * VIDEOS_PER_PAGE);
 
   useEffect(() => {
     axios.get(`${backendUrl}/api/videos`)
@@ -45,13 +43,6 @@ export default function AuthPage() {
       }
     }
   }, []);
-
-  useEffect(() => {
-    if (message && message.toLowerCase().includes("réussie")) {
-      const timer = setTimeout(() => setMessage(""), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -97,7 +88,7 @@ export default function AuthPage() {
     }
   };
 
-  // 🔒 PAGE D’ACCUEIL
+  // 🔒 Page d’accueil
   if (!user) {
     const teaser = videos[teaserIndex];
     return (
@@ -115,44 +106,36 @@ export default function AuthPage() {
         <div className="z-10 bg-zinc-900 bg-opacity-80 p-6 rounded-2xl shadow-2xl w-full max-w-md border border-yellow-500">
           <h1 className="text-3xl font-bold text-center mb-2 text-yellow-400">StreamX Video</h1>
           <p className="text-center text-zinc-300 mb-4">Espace exclusif pour adultes. Connecte-toi ou inscris-toi.</p>
-
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-            <input type="email" placeholder="Email" className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            <input type="password" placeholder="Mot de passe" className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            <button type="submit" className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded-xl">
-              {isLogin ? "Se connecter" : "S'inscrire"}
-            </button>
+            <input type="email" placeholder="Email" className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input type="password" placeholder="Mot de passe" className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <button type="submit" className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded-xl">{isLogin ? "Se connecter" : "S'inscrire"}</button>
           </form>
-
           <button onClick={() => setIsLogin(!isLogin)} className="mt-4 text-sm text-zinc-400 underline text-center">
             {isLogin ? "Pas encore inscrit ?" : "Déjà inscrit ?"}
           </button>
-
           {message && <p className="text-red-500 text-center mt-4 font-semibold">{message}</p>}
         </div>
       </div>
     );
   }
 
-  // ✅ PAGE VIDÉOS
+  // ✅ Page des vidéos (après connexion)
   return (
     <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white px-4 py-8 flex flex-col justify-between">
       <div>
         <h2 className="text-4xl font-bold mb-6 text-center text-yellow-400">🎬 Vidéos Premium</h2>
 
         {!user.isSubscribed && (
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-6">
-            <button onClick={handlePayPalPayment} className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-xl shadow-lg transition">
-              🔐 Débloquer toutes les vidéos – 5€
+          <div className="flex justify-center mb-6">
+            <button onClick={handlePayPalPayment} className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-6 py-3 rounded-xl shadow-xl">
+              🔐 Débloquer toutes les vidéos pendant 1 mois – 2€
             </button>
-            <a href="https://t.me/streamxsupport1" target="_blank" rel="noreferrer" className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition">
-              📱 Payer via Mobile Money (Telegram)
-            </a>
           </div>
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-          {currentVideos.map((video) => (
+          {paginatedVideos.map((video) => (
             <div key={video.id} className="bg-zinc-800 rounded-2xl overflow-hidden shadow-xl hover:scale-105 transition">
               <video
                 className={`w-full h-48 object-cover ${user.isSubscribed ? "" : "blur-md grayscale"}`}
@@ -182,23 +165,19 @@ export default function AuthPage() {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-center items-center gap-4 mt-8">
-          <button
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 disabled:opacity-40"
-          >
-            ◀ Précédent
-          </button>
-          <span className="font-semibold text-yellow-400">Page {currentPage} / {totalPages}</span>
-          <button
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 disabled:opacity-40"
-          >
-            Suivant ▶
-          </button>
-        </div>
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-10 space-x-2">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentPage(i + 1)}
+                className={`px-4 py-2 rounded-full ${currentPage === i + 1 ? "bg-yellow-500 text-black font-bold" : "bg-zinc-800 text-white hover:bg-zinc-700"}`}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        )}
 
         {message && <p className="text-red-500 text-center mt-6 text-lg font-semibold">{message}</p>}
       </div>
@@ -206,10 +185,14 @@ export default function AuthPage() {
       <footer className="mt-12 bg-zinc-950 border-t border-zinc-700 pt-6 pb-4 text-center text-sm text-zinc-400">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <p>&copy; {new Date().getFullYear()} StreamX Video. Tous droits réservés.</p>
-          <div className="flex items-center gap-2">
-            <span>Moyens de paiement :</span>
-            <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal" className="h-6" />
-            <a href="https://t.me/streamxsupport1" className="text-blue-500 underline" target="_blank" rel="noreferrer">Mobile Money (via Telegram)</a>
+          <div className="flex items-center gap-3">
+            <span>Payer via :</span>
+            <button onClick={handlePayPalPayment} title="PayPal">
+              <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal" className="h-6 sm:h-8" />
+            </button>
+            <a href="https://t.me/streamxsupport1" target="_blank" rel="noopener noreferrer" title="Mobile Money via Telegram">
+              <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" className="h-6 sm:h-8 hover:scale-110 transition" />
+            </a>
           </div>
         </div>
       </footer>
