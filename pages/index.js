@@ -143,7 +143,7 @@ export default function AuthPage() {
         {!user.isSubscribed && (
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-6">
             <button onClick={handlePayPalPayment} className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-xl shadow-lg transition">
-              🔐 Débloquer toutes les vidéos – 5€
+              🔐 Débloquer toutes les vidéos – 2€
             </button>
             <a href="https://t.me/streamxsupport1" target="_blank" rel="noreferrer" className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition">
               📱 Payer via Mobile Money (Telegram)
