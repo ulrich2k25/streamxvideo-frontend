@@ -202,17 +202,26 @@ export default function AuthPage() {
 
         {message && <p className="text-red-500 text-center mt-6 text-lg font-semibold">{message}</p>}
       </div>
-
 <footer className="mt-12 bg-zinc-950 border-t border-zinc-700 pt-6 pb-4 text-center text-sm text-zinc-400">
   <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
     <p>&copy; {new Date().getFullYear()} StreamX Video. Tous droits réservés.</p>
     <div className="flex items-center gap-2">
       <span>Moyens de paiement :</span>
-      <img
-        src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
-        alt="PayPal"
-        className="h-6"
-      />
+
+      {/* Logo PayPal cliquable avec fonction */}
+      <button
+        onClick={handlePayPalPayment}
+        title="Payer avec PayPal"
+        className="focus:outline-none"
+      >
+        <img
+          src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
+          alt="PayPal"
+          className="h-6 hover:scale-110 transition duration-200 cursor-pointer"
+        />
+      </button>
+
+      {/* Logo Telegram stylisé */}
       <a
         href="https://t.me/streamxsupport1"
         target="_blank"
@@ -228,6 +237,7 @@ export default function AuthPage() {
     </div>
   </div>
 </footer>
+
 
     </div>
   );
