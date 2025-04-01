@@ -1,3 +1,5 @@
+// AuthPage.js FINAL avec affichage image non-abonné + message + zoom + footer cliquable
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -97,7 +99,6 @@ export default function AuthPage() {
     }
   };
 
-  // 🔒 PAGE D’ACCUEIL
   if (!user) {
     const teaser = videos[teaserIndex];
     return (
@@ -134,7 +135,6 @@ export default function AuthPage() {
     );
   }
 
-  // ✅ PAGE VIDÉOS
   return (
     <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white px-4 py-8 flex flex-col justify-between">
       <div>
@@ -153,18 +153,35 @@ export default function AuthPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
           {currentVideos.map((video) => (
-            <div key={video.id} className="bg-zinc-800 rounded-2xl overflow-hidden shadow-xl hover:scale-105 transition">
-              <video
-                className={`w-full h-48 object-cover ${user.isSubscribed ? "" : "blur-md grayscale"}`}
-                muted
-                playsInline
-                controls={user.isSubscribed}
-                onClick={() => {
-                  if (!user.isSubscribed) handlePayPalPayment();
-                }}
-              >
-                <source src={video.file_path} type="video/mp4" />
-              </video>
+            <div key={video.id} className="bg-zinc-800 rounded-2xl overflow-hidden shadow-xl transition transform hover:scale-105">
+              {user.isSubscribed ? (
+                <video
+                  className="w-full h-48 object-cover"
+                  muted
+                  playsInline
+                  controls
+                >
+                  <source src={video.file_path} type="video/mp4" />
+                </video>
+              ) : (
+                <div
+                  className="w-full h-48 bg-black relative cursor-pointer overflow-hidden group"
+                  onClick={handlePayPalPayment}
+                >
+                  <video
+                    src={video.file_path}
+                    muted
+                    playsInline
+                    preload="metadata"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-500"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center px-4 text-center">
+                    <span className="text-yellow-400 font-bold text-sm sm:text-base">🔒 Aperçu</span>
+                    <span className="text-yellow-100 text-xs sm:text-sm mt-1">Clique pour débloquer le contenu complet</span>
+                  </div>
+                </div>
+              )}
+
               <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2 text-yellow-300">{video.title}</h3>
                 {!user.isSubscribed ? (
@@ -181,66 +198,50 @@ export default function AuthPage() {
           ))}
         </div>
 
-        {/* Pagination */}
         <div className="flex justify-center items-center gap-4 mt-8">
-          <button
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 disabled:opacity-40"
-          >
+          <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 disabled:opacity-40">
             ◀ Précédent
           </button>
           <span className="font-semibold text-yellow-400">Page {currentPage} / {totalPages}</span>
-          <button
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 disabled:opacity-40"
-          >
+          <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages} className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 disabled:opacity-40">
             Suivant ▶
           </button>
         </div>
 
         {message && <p className="text-red-500 text-center mt-6 text-lg font-semibold">{message}</p>}
       </div>
-<footer className="mt-12 bg-zinc-950 border-t border-zinc-700 pt-6 pb-4 text-center text-sm text-zinc-400">
-  <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-    <p>&copy; {new Date().getFullYear()} StreamX Video. Tous droits réservés.</p>
-    <div className="flex items-center gap-2">
-      <span>Moyens de paiement :</span>
 
-      {/* Logo PayPal cliquable avec fonction */}
-      <button
-        onClick={handlePayPalPayment}
-        title="Payer avec PayPal"
-        className="focus:outline-none"
-      >
-        <img
-          src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
-          alt="PayPal"
-          className="h-6 hover:scale-110 transition duration-200 cursor-pointer"
-        />
-      </button>
-
-      {/* Logo Telegram stylisé */}
-      <a
-        href="https://t.me/streamxsupport1"
-        target="_blank"
-        rel="noreferrer"
-        title="Mobile Money"
-      >
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
-          alt="Telegram"
-          className="h-6 hover:scale-110 hover:drop-shadow-[0_0_10px_#facc15] transition duration-200"
-        />
-      </a>
-    </div>
-  </div>
-</footer>
-
-
+      <footer className="mt-12 bg-zinc-950 border-t border-zinc-700 pt-6 pb-4 text-center text-sm text-zinc-400">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <p>&copy; {new Date().getFullYear()} StreamX Video. Tous droits réservés.</p>
+          <div className="flex items-center gap-2">
+            <span>Moyens de paiement :</span>
+            <button
+              onClick={handlePayPalPayment}
+              title="Payer avec PayPal"
+              className="focus:outline-none"
+            >
+              <img
+                src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
+                alt="PayPal"
+                className="h-6 hover:scale-110 transition duration-200 cursor-pointer"
+              />
+            </button>
+            <a
+              href="https://t.me/streamxsupport1"
+              target="_blank"
+              rel="noreferrer"
+              title="Mobile Money"
+            >
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
+                alt="Telegram"
+                className="h-6 hover:scale-110 hover:drop-shadow-[0_0_10px_#facc15] transition duration-200"
+              />
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
-
-
