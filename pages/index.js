@@ -232,8 +232,8 @@ export default function AuthPage() {
 
         {/* Bloc promo 1XBET */}
         <div className="text-center text-sm text-white mt-12">
-          🎁 <span className="font-bold">BONUS EXCLUSIF 1XBET</span> 🎁<br />
-          👉 Cliquez ici et active l acces gratuit sur avec  le code promo: <span className="text-yellow-400 font-bold">Bonnus</span><br />
+       🎁 <span className="font-bold text-yellow-400 animate-blink">BONUS EXCLUSIF 1XBET 24H</span> 🎁
+       👉 Cliquez ici et activez l acces gratuit avec le code promo: <span className="text-yellow-400 font-bold">Bonnus</span><br />
           <a
             href="https://affpa.top/L?tag=d_451639m_97c_&site=451639&ad=97"
             target="_blank"
