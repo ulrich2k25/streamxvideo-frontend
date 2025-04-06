@@ -1,4 +1,4 @@
-// AuthPage.js FINAL avec pagination persistante + promo 1XBET + compatible Vercel (sans useNavigate)
+// AuthPage.js FINAL avec pagination persistante + promo 1XBET + optimisation mobile teaser + compatible Vercel
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -124,14 +124,17 @@ export default function AuthPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white flex flex-col items-center justify-center px-4 py-10 relative">
         {teaser && (
-          <video
-            src={teaser.file_path}
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover blur-sm opacity-30 z-0"
-          />
+          <>
+            <video
+              src={teaser.file_path}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover blur-sm opacity-30 z-0"
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-60 sm:bg-opacity-20 z-0"></div>
+          </>
         )}
         <div className="z-10 bg-zinc-900 bg-opacity-80 p-6 rounded-2xl shadow-2xl w-full max-w-md border border-yellow-500">
           <h1 className="text-3xl font-bold text-center mb-2 text-yellow-400">StreamX Video</h1>
@@ -232,8 +235,8 @@ export default function AuthPage() {
 
         {/* Bloc promo 1XBET */}
         <div className="text-center text-sm text-white mt-12">
-       🎁 <span className="font-bold text-yellow-400 animate-blink">BONUS EXCLUSIF 1XBET 24H</span> 🎁
-       👉 Cliquez ici et activez l acces gratuit avec le code promo: <span className="text-yellow-400 font-bold">Bonnus</span><br />
+          🎁 <span className="font-bold text-yellow-400 animate-blink">BONUS EXCLUSIF 1XBET 24H</span> 🎁<br />
+          👉 Cliquez ici et activez l'accès gratuit avec le code promo: <span className="text-yellow-400 font-bold">Bonnus</span><br />
           <a
             href="https://affpa.top/L?tag=d_451639m_97c_&site=451639&ad=97"
             target="_blank"
