@@ -1,8 +1,7 @@
-// AuthPage.js FINAL avec pagination persistante + promo 1XBET + compatible Vercel
+// AuthPage.js FINAL avec pagination persistante + promo 1XBET + compatible Vercel (sans useNavigate)
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const backendUrl = "https://streamxvideo-backend-production.up.railway.app";
 const SESSION_DURATION = 10 * 60 * 1000; // 10 minutes
@@ -11,6 +10,14 @@ const isClient = typeof window !== "undefined";
 const useSafeQuery = () => {
   if (!isClient) return new URLSearchParams();
   return new URLSearchParams(window.location.search);
+};
+
+const updateQueryParam = (page) => {
+  if (typeof window !== "undefined") {
+    const url = new URL(window.location);
+    url.searchParams.set("page", page);
+    window.history.pushState({}, "", url);
+  }
 };
 
 export default function AuthPage() {
@@ -22,7 +29,6 @@ export default function AuthPage() {
   const [videos, setVideos] = useState([]);
   const [teaserIndex, setTeaserIndex] = useState(0);
   const query = useSafeQuery();
-  const navigate = useNavigate();
 
   const initialPage = parseInt(query.get("page")) || 1;
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -66,7 +72,7 @@ export default function AuthPage() {
   }, [message]);
 
   useEffect(() => {
-    navigate(`?page=${currentPage}`);
+    updateQueryParam(currentPage);
   }, [currentPage]);
 
   const handleSubmit = async (e) => {
@@ -160,7 +166,7 @@ export default function AuthPage() {
               🔐 Débloquer toutes les vidéos – 2€
             </button>
             <a href="https://t.me/streamxsupport1" target="_blank" rel="noreferrer" className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition">
-              📱 Payer via Mobile Money
+              📱 Payer via Mobile Money 
             </a>
           </div>
         )}
@@ -227,7 +233,7 @@ export default function AuthPage() {
         {/* Bloc promo 1XBET */}
         <div className="text-center text-sm text-white mt-12">
           🎁 <span className="font-bold">BONUS EXCLUSIF 1XBET</span> 🎁<br />
-          👉 Cliquez ici et entrez le code promo pour avoir l acces gratuit  <span className="text-yellow-400 font-bold">1xc_4424</span><br />
+          👉 Cliquez ici et entrez le code promo <span className="text-yellow-400 font-bold">Bonnus</span><br />
           <a
             href="https://refpa.top/L?tag=d_2990400m_13878c_&site=2990400&ad=13878"
             target="_blank"
@@ -273,4 +279,3 @@ export default function AuthPage() {
     </div>
   );
 }
-
