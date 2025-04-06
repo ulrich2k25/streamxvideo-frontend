@@ -1,15 +1,17 @@
-// AuthPage.js FINAL avec pagination persistante + promo 1XBET
+// AuthPage.js FINAL avec pagination persistante + promo 1XBET + compatible Vercel
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const backendUrl = "https://streamxvideo-backend-production.up.railway.app";
 const SESSION_DURATION = 10 * 60 * 1000; // 10 minutes
 
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+const isClient = typeof window !== "undefined";
+const useSafeQuery = () => {
+  if (!isClient) return new URLSearchParams();
+  return new URLSearchParams(window.location.search);
+};
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
@@ -19,7 +21,7 @@ export default function AuthPage() {
   const [user, setUser] = useState(null);
   const [videos, setVideos] = useState([]);
   const [teaserIndex, setTeaserIndex] = useState(0);
-  const query = useQuery();
+  const query = useSafeQuery();
   const navigate = useNavigate();
 
   const initialPage = parseInt(query.get("page")) || 1;
@@ -158,7 +160,7 @@ export default function AuthPage() {
               🔐 Débloquer toutes les vidéos – 2€
             </button>
             <a href="https://t.me/streamxsupport1" target="_blank" rel="noreferrer" className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition">
-              📱 Payer via Mobile Money (Telegram)
+              📱 Payer via Mobile Money
             </a>
           </div>
         )}
@@ -225,7 +227,7 @@ export default function AuthPage() {
         {/* Bloc promo 1XBET */}
         <div className="text-center text-sm text-white mt-12">
           🎁 <span className="font-bold">BONUS EXCLUSIF 1XBET</span> 🎁<br />
-          👉 Cliquez ici et entrez le code promo <span className="text-yellow-400 font-bold">1xc_4424</span><br />
+          👉 Cliquez ici et entrez le code promo pour avoir l acces gratuit  <span className="text-yellow-400 font-bold">1xc_4424</span><br />
           <a
             href="https://refpa.top/L?tag=d_2990400m_13878c_&site=2990400&ad=13878"
             target="_blank"
