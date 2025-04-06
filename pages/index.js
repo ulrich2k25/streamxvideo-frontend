@@ -1,10 +1,15 @@
-// AuthPage.js FINAL avec affichage image non-abonné + message + zoom + footer cliquable
+// AuthPage.js FINAL avec pagination persistante + promo 1XBET
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const backendUrl = "https://streamxvideo-backend-production.up.railway.app";
 const SESSION_DURATION = 10 * 60 * 1000; // 10 minutes
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
@@ -14,7 +19,11 @@ export default function AuthPage() {
   const [user, setUser] = useState(null);
   const [videos, setVideos] = useState([]);
   const [teaserIndex, setTeaserIndex] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
+  const query = useQuery();
+  const navigate = useNavigate();
+
+  const initialPage = parseInt(query.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(initialPage);
 
   const videosPerPage = 20;
   const indexOfLastVideo = currentPage * videosPerPage;
@@ -30,9 +39,8 @@ export default function AuthPage() {
       })
       .catch(() => setMessage("Erreur lors du chargement des vidéos."));
 
-    const params = new URLSearchParams(window.location.search);
-    const msg = params.get("message");
-    const emailParam = params.get("email");
+    const msg = query.get("message");
+    const emailParam = query.get("email");
     if (msg) setMessage(decodeURIComponent(msg));
     if (emailParam) setEmail(decodeURIComponent(emailParam));
 
@@ -54,6 +62,10 @@ export default function AuthPage() {
       return () => clearTimeout(timer);
     }
   }, [message]);
+
+  useEffect(() => {
+    navigate(`?page=${currentPage}`);
+  }, [currentPage]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -209,6 +221,20 @@ export default function AuthPage() {
         </div>
 
         {message && <p className="text-red-500 text-center mt-6 text-lg font-semibold">{message}</p>}
+
+        {/* Bloc promo 1XBET */}
+        <div className="text-center text-sm text-white mt-12">
+          🎁 <span className="font-bold">BONUS EXCLUSIF 1XBET</span> 🎁<br />
+          👉 Cliquez ici et entrez le code promo <span className="text-yellow-400 font-bold">1xc_4424</span><br />
+          <a
+            href="https://refpa.top/L?tag=d_2990400m_13878c_&site=2990400&ad=13878"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block mt-2 px-4 py-2 bg-yellow-500 text-black font-semibold rounded hover:bg-yellow-400 transition"
+          >
+            🎰 S'inscrire maintenant sur 1XBET
+          </a>
+        </div>
       </div>
 
       <footer className="mt-12 bg-zinc-950 border-t border-zinc-700 pt-6 pb-4 text-center text-sm text-zinc-400">
@@ -245,3 +271,4 @@ export default function AuthPage() {
     </div>
   );
 }
+
