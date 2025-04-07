@@ -175,18 +175,20 @@ export default function AuthPage() {
         )}
 
 
-
 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
   {currentVideos.map((video) => (
     <div key={video.id} className="bg-zinc-800 rounded-2xl overflow-hidden shadow-xl transition transform hover:scale-105">
+      
+      {/* Abonné */}
       {user.isSubscribed ? (
         <>
-          {/* Mobile : miniature si dispo, sinon fallback vidéo */}
+          {/* Mobile (miniature ou fallback vidéo) */}
           {video.thumbnail_path ? (
             <img
               src={video.thumbnail_path}
               alt={video.title}
               className="w-full h-48 object-cover sm:hidden"
+              onClick={() => window.open(video.file_path, "_blank")}
             />
           ) : (
             <video
@@ -199,7 +201,7 @@ export default function AuthPage() {
             </video>
           )}
 
-          {/* Tablette/PC : vidéo */}
+          {/* Tablette / PC : vidéo normale */}
           <video
             className="w-full h-48 object-cover hidden sm:block"
             muted
@@ -210,38 +212,42 @@ export default function AuthPage() {
           </video>
         </>
       ) : (
-        <div
-          className="w-full h-48 bg-black relative cursor-pointer overflow-hidden group"
-          onClick={handlePayPalPayment}
-        >
-          {/* Mobile : miniature floue si dispo, sinon rien */}
-          {video.thumbnail_path ? (
-            <img
-              src={video.thumbnail_path}
-              alt="aperçu"
-              className="w-full h-full object-cover blur-sm opacity-70 sm:hidden"
+        <>
+          {/* Bloc vidéo ou image pour les non abonnés */}
+          <div
+            className="w-full h-48 bg-black relative cursor-pointer overflow-hidden group"
+            onClick={handlePayPalPayment}
+          >
+            {/* Mobile : miniature visible */}
+            {video.thumbnail_path ? (
+              <img
+                src={video.thumbnail_path}
+                alt="aperçu"
+                className="w-full h-full object-cover sm:hidden"
+              />
+            ) : (
+              <div className="w-full h-full bg-zinc-900 sm:hidden"></div>
+            )}
+
+            {/* Tablette / PC : vidéo floutée */}
+            <video
+              src={video.file_path}
+              muted
+              playsInline
+              preload="metadata"
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-500 hidden sm:block blur-sm opacity-70"
             />
-          ) : (
-            <div className="w-full h-full bg-zinc-900 sm:hidden"></div>
-          )}
 
-          {/* Tablette/PC : vidéo floutée */}
-          <video
-            src={video.file_path}
-            muted
-            playsInline
-            preload="metadata"
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-500 hidden sm:block blur-sm opacity-70"
-          />
-
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center px-4 text-center">
-            <span className="text-yellow-400 font-bold text-sm sm:text-base">🔒 Aperçu</span>
-            <span className="text-yellow-100 text-xs sm:text-sm mt-1">Clique pour débloquer le contenu complet</span>
+            {/* Overlay (visible sur mobile et PC) */}
+            <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center px-4 text-center">
+              <span className="text-yellow-400 font-bold text-sm sm:text-base">🔒 Aperçu</span>
+              <span className="text-yellow-100 text-xs sm:text-sm mt-1">Clique pour débloquer le contenu complet</span>
+            </div>
           </div>
-        </div>
+        </>
       )}
 
-      {/* Titre + bouton */}
+      {/* Titre + bouton bas */}
       <div className="p-4">
         <h3 className="text-lg font-semibold mb-2 text-yellow-300">{video.title}</h3>
         {!user.isSubscribed ? (
