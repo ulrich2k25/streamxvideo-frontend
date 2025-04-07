@@ -174,8 +174,6 @@ export default function AuthPage() {
           </div>
         )}
 
- // AuthPage.js FINAL avec pagination persistante + promo 1XBET + optimisation mobile thumbnails
-// ✅ Ajout de miniatures uniquement sur mobile (responsive)
 
 
 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -183,12 +181,23 @@ export default function AuthPage() {
     <div key={video.id} className="bg-zinc-800 rounded-2xl overflow-hidden shadow-xl transition transform hover:scale-105">
       {user.isSubscribed ? (
         <>
-          {/* Mobile : image miniature */}
-          <img
-            src={video.thumbnail_path}
-            alt={video.title}
-            className="w-full h-48 object-cover sm:hidden"
-          />
+          {/* Mobile : miniature si dispo, sinon fallback vidéo */}
+          {video.thumbnail_path ? (
+            <img
+              src={video.thumbnail_path}
+              alt={video.title}
+              className="w-full h-48 object-cover sm:hidden"
+            />
+          ) : (
+            <video
+              className="w-full h-48 object-cover sm:hidden"
+              muted
+              playsInline
+              controls
+            >
+              <source src={video.file_path} type="video/mp4" />
+            </video>
+          )}
 
           {/* Tablette/PC : vidéo */}
           <video
@@ -205,12 +214,16 @@ export default function AuthPage() {
           className="w-full h-48 bg-black relative cursor-pointer overflow-hidden group"
           onClick={handlePayPalPayment}
         >
-          {/* Mobile : miniature floue */}
-          <img
-            src={video.thumbnail_path}
-            alt="aperçu"
-            className="w-full h-full object-cover blur-sm opacity-70 sm:hidden"
-          />
+          {/* Mobile : miniature floue si dispo, sinon rien */}
+          {video.thumbnail_path ? (
+            <img
+              src={video.thumbnail_path}
+              alt="aperçu"
+              className="w-full h-full object-cover blur-sm opacity-70 sm:hidden"
+            />
+          ) : (
+            <div className="w-full h-full bg-zinc-900 sm:hidden"></div>
+          )}
 
           {/* Tablette/PC : vidéo floutée */}
           <video
@@ -218,7 +231,7 @@ export default function AuthPage() {
             muted
             playsInline
             preload="metadata"
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-500 hidden sm:block"
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-500 hidden sm:block blur-sm opacity-70"
           />
 
           <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center px-4 text-center">
@@ -228,14 +241,21 @@ export default function AuthPage() {
         </div>
       )}
 
+      {/* Titre + bouton */}
       <div className="p-4">
         <h3 className="text-lg font-semibold mb-2 text-yellow-300">{video.title}</h3>
         {!user.isSubscribed ? (
-          <button onClick={handlePayPalPayment} className="w-full bg-yellow-500 text-black font-bold py-2 rounded-xl hover:bg-yellow-600">
+          <button
+            onClick={handlePayPalPayment}
+            className="w-full bg-yellow-500 text-black font-bold py-2 rounded-xl hover:bg-yellow-600"
+          >
             🔒 Abonnement requis
           </button>
         ) : (
-          <button onClick={() => handleDownload(video.file_path)} className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700">
+          <button
+            onClick={() => handleDownload(video.file_path)}
+            className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700"
+          >
             📥 Télécharger
           </button>
         )}
@@ -243,6 +263,7 @@ export default function AuthPage() {
     </div>
   ))}
 </div>
+
 
 
 
