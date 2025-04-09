@@ -131,7 +131,7 @@ export default function AuthPage() {
               muted
               loop
               playsInline
-              className="absolute inset-0 w-full h-full object-cover blur-md opacity-40 z-0 brightness-150 contrast-125"
+              className="absolute inset-0 w-full h-full object-cover blur-sm brightness-110 contrast-110 opacity-50 z-0"
             />
             <div className="absolute inset-0 bg-black bg-opacity-60 z-0"></div>
           </>
