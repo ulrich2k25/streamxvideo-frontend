@@ -159,59 +159,80 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white px-4 py-8">
-      <h2 className="text-3xl font-bold text-center mb-6 text-yellow-400">Bienvenue, {user.email}</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {videos.map((video) => (
-          <div key={video.id} className="relative rounded-xl overflow-hidden shadow-lg bg-zinc-800">
-            {!user.isSubscribed && (
-              <>
-                <img
-                  src={video.thumbnail_path}
-                  alt={video.title}
-                  className="w-full h-48 object-cover sm:blur-sm sm:opacity-70"
-                />
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-60 sm:bg-opacity-40">
-                  <button
-                    onClick={handlePayPalPayment}
-                    className="bg-yellow-400 text-black font-bold px-5 py-2 rounded-full text-sm flex items-center gap-2 shadow-lg"
-                  >
-                    <span className="text-lg">▶</span> Play
-                  </button>
-                  <p className="text-xs text-white mt-2">Clique pour débloquer le contenu complet</p>
-                </div>
-              </>
-            )}
-            {user.isSubscribed && (
-              <video
-                src={video.file_path}
-                className="w-full h-48 object-cover"
-                controls
-                playsInline
-                muted
-              />
-            )}
-            <div className="p-4">
-              <p className="text-yellow-300 font-semibold text-sm mb-1">{video.title}</p>
-              {user.isSubscribed ? (
-                <button
-                  onClick={() => handleDownload(video.file_path)}
-                  className="bg-green-600 hover:bg-green-700 w-full py-2 rounded text-white"
-                >
-                  📥 Télécharger
-                </button>
-              ) : (
-                <button
-                  onClick={handlePayPalPayment}
-                  className="bg-yellow-500 hover:bg-yellow-600 w-full py-2 rounded text-black font-bold"
-                >
-                  🔒 Abonnement requis
-                </button>
-              )}
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white px-4 py-8 flex flex-col justify-between">
+      <div>
+        <h2 className="text-4xl font-bold mb-6 text-center text-yellow-400">🎬 Vidéos Premium</h2>
+
+        {!user.isSubscribed && (
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-6">
+            <button onClick={handlePayPalPayment} className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-xl shadow-lg transition">
+              🔐 Débloquer toutes les vidéos – 2€
+            </button>
+            <a href="https://t.me/streamxsupport1" target="_blank" rel="noreferrer" className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition">
+              📱 Payer via Mobile Money 
+            </a>
           </div>
-        ))}
-      </div>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+          {currentVideos.map((video) => (
+            <div key={video.id} className="bg-zinc-800 rounded-2xl overflow-hidden shadow-xl transition transform hover:scale-105">
+              {user.isSubscribed ? (
+                <>
+                  <video
+                    className="w-full h-48 object-cover sm:hidden"
+                    controls
+                    playsInline
+                    muted
+                  >
+                    <source src={video.file_path} type="video/mp4" />
+                  </video>
+                  <video
+                    className="w-full h-48 object-cover hidden sm:block"
+                    muted
+                    playsInline
+                    controls
+                  >
+                    <source src={video.file_path} type="video/mp4" />
+                  </video>
+                </>
+              ) : (
+                <div className="w-full h-48 bg-black relative cursor-pointer overflow-hidden group" onClick={handlePayPalPayment}>
+                  {video.thumbnail_path ? (
+                    <img src={video.thumbnail_path} alt="aperçu" className="w-full h-full object-cover sm:hidden" />
+                  ) : (
+                    <div className="w-full h-full bg-zinc-900 sm:hidden"></div>
+                  )}
+                  <video
+                    src={video.file_path}
+                    muted
+                    playsInline
+                    preload="metadata"
+                    className="absolute inset-0 w-full h-full object-cover hidden sm:block blur-sm opacity-70"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center px-4 text-center">
+                    <button className="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
+                      ▶ <span>Play</span>
+                    </button>
+                    <span className="text-yellow-100 text-xs sm:text-sm mt-1">Clique pour débloquer le contenu complet</span>
+                  </div>
+                </div>
+              )}
+              <div className="p-4">
+                <h3 className="text-lg font-semibold mb-2 text-yellow-300">{video.title}</h3>
+                {!user.isSubscribed ? (
+                  <button onClick={handlePayPalPayment} className="w-full bg-yellow-500 text-black font-bold py-2 rounded-xl hover:bg-yellow-600">
+                    🔒 Abonnement requis
+                  </button>
+                ) : (
+                  <button onClick={() => handleDownload(video.file_path)} className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700">
+                    📥 Télécharger
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
 
         <div className="flex justify-center items-center gap-4 mt-8">
           <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 disabled:opacity-40">
