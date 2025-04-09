@@ -179,9 +179,18 @@ export default function AuthPage() {
             <div key={video.id} className="bg-zinc-800 rounded-2xl overflow-hidden shadow-xl transition transform hover:scale-105">
               {user.isSubscribed ? (
                 <>
-                  <video className="w-full h-48 object-cover sm:hidden" controls muted playsInline>
-                    <source src={video.file_path} type="video/mp4" />
-                  </video>
+				
+              <video 
+			   className="w-full h-48 object-cover sm:hidden bg-black brightness-110 contrast-110"
+               controls
+               muted
+               playsInline
+               poster={video.thumbnail_path}
+               >
+               <source src={video.file_path} type="video/mp4" />
+               </video>
+
+
                   <video className="w-full h-48 object-cover hidden sm:block" muted playsInline controls>
                     <source src={video.file_path} type="video/mp4" />
                   </video>
