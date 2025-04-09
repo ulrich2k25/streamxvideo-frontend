@@ -1,10 +1,10 @@
-// AuthPage.js FINAL avec bouton Play amélioré sur mobile, vidéos floutées plus visibles, pagination, promo 1XBET et backend connecté
+// 📁 AuthPage.js — version finale complète
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const backendUrl = "https://streamxvideo-backend-production.up.railway.app";
-const SESSION_DURATION = 10 * 60 * 1000; // 10 minutes
+const SESSION_DURATION = 10 * 60 * 1000;
 
 const isClient = typeof window !== "undefined";
 const useSafeQuery = () => {
@@ -179,20 +179,10 @@ export default function AuthPage() {
             <div key={video.id} className="bg-zinc-800 rounded-2xl overflow-hidden shadow-xl transition transform hover:scale-105">
               {user.isSubscribed ? (
                 <>
-                  <video
-                    className="w-full h-48 object-cover sm:hidden"
-                    controls
-                    playsInline
-                    muted
-                  >
+                  <video className="w-full h-48 object-cover sm:hidden" controls muted playsInline>
                     <source src={video.file_path} type="video/mp4" />
                   </video>
-                  <video
-                    className="w-full h-48 object-cover hidden sm:block"
-                    muted
-                    playsInline
-                    controls
-                  >
+                  <video className="w-full h-48 object-cover hidden sm:block" muted playsInline controls>
                     <source src={video.file_path} type="video/mp4" />
                   </video>
                 </>
@@ -203,13 +193,7 @@ export default function AuthPage() {
                   ) : (
                     <div className="w-full h-full bg-zinc-900 sm:hidden"></div>
                   )}
-                  <video
-                    src={video.file_path}
-                    muted
-                    playsInline
-                    preload="metadata"
-                    className="absolute inset-0 w-full h-full object-cover hidden sm:block blur-sm opacity-70"
-                  />
+                  <video src={video.file_path} muted playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover hidden sm:block blur-sm opacity-70" />
                   <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center px-4 text-center">
                     <button className="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
                       ▶ <span>Play</span>
@@ -249,12 +233,7 @@ export default function AuthPage() {
         <div className="text-center text-sm text-white mt-12">
           🎁 <span className="font-bold text-yellow-400 animate-blink">BONUS EXCLUSIF 1XBET 24H</span> 🎁<br />
           👉 Cliquez ici et activez l'accès gratuit avec le code promo: <span className="text-yellow-400 font-bold">Bonnus</span><br />
-          <a
-            href="https://affpa.top/L?tag=d_451639m_97c_&site=451639&ad=97"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block mt-2 px-4 py-2 bg-yellow-500 text-black font-semibold rounded hover:bg-yellow-400 transition"
-          >
+          <a href="https://affpa.top/L?tag=d_451639m_97c_&site=451639&ad=97" target="_blank" rel="noopener noreferrer" className="inline-block mt-2 px-4 py-2 bg-yellow-500 text-black font-semibold rounded hover:bg-yellow-400 transition">
             🎰 S'inscrire maintenant sur 1XBET
           </a>
         </div>
@@ -265,28 +244,11 @@ export default function AuthPage() {
           <p>&copy; {new Date().getFullYear()} StreamX Video. Tous droits réservés.</p>
           <div className="flex items-center gap-2">
             <span>Moyens de paiement :</span>
-            <button
-              onClick={handlePayPalPayment}
-              title="Payer avec PayPal"
-              className="focus:outline-none"
-            >
-              <img
-                src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
-                alt="PayPal"
-                className="h-6 hover:scale-110 transition duration-200 cursor-pointer"
-              />
+            <button onClick={handlePayPalPayment} title="Payer avec PayPal" className="focus:outline-none">
+              <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal" className="h-6 hover:scale-110 transition duration-200 cursor-pointer" />
             </button>
-            <a
-              href="https://t.me/streamxsupport1"
-              target="_blank"
-              rel="noreferrer"
-              title="Mobile Money"
-            >
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
-                alt="Telegram"
-                className="h-6 hover:scale-110 hover:drop-shadow-[0_0_10px_#facc15] transition duration-200"
-              />
+            <a href="https://t.me/streamxsupport1" target="_blank" rel="noreferrer" title="Mobile Money">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" className="h-6 hover:scale-110 hover:drop-shadow-[0_0_10px_#facc15] transition duration-200" />
             </a>
           </div>
         </div>
