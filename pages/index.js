@@ -1,6 +1,6 @@
 // AuthPage.js FINAL avec pagination persistante + promo 1XBET + optimisation mobile teaser + compatible Vercel
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 const backendUrl = "https://streamxvideo-backend-production.up.railway.app";
@@ -119,6 +119,8 @@ export default function AuthPage() {
     }
   };
 
+  const isMobile = () => typeof window !== 'undefined' && window.innerWidth < 640;
+
   if (!user) {
     const teaser = videos[teaserIndex];
     return (
@@ -131,7 +133,7 @@ export default function AuthPage() {
               muted
               loop
               playsInline
-              className="absolute inset-0 w-full h-full object-cover blur-sm opacity-30 z-0"
+              className="absolute inset-0 w-full h-full object-cover blur-sm opacity-30 z-0 sm:brightness-100 brightness-125 sm:contrast-100 contrast-125"
             />
             <div className="absolute inset-0 bg-black bg-opacity-60 sm:bg-opacity-20 z-0"></div>
           </>
@@ -174,105 +176,93 @@ export default function AuthPage() {
           </div>
         )}
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+          {currentVideos.map((video) => (
+            <div key={video.id} className="bg-zinc-800 rounded-2xl overflow-hidden shadow-xl transition transform hover:scale-105">
+              {user.isSubscribed ? (
+                <>
+                  {video.thumbnail_path ? (
+                    <img
+                      src={video.thumbnail_path}
+                      alt={video.title}
+                      className="w-full h-48 object-cover sm:hidden"
+                      onClick={() => window.open(video.file_path, "_blank")}
+                    />
+                  ) : (
+                    <video
+                      className="w-full h-48 object-cover sm:hidden"
+                      muted
+                      playsInline
+                      controls
+                    >
+                      <source src={video.file_path} type="video/mp4" />
+                    </video>
+                  )}
+                  <video
+                    className="w-full h-48 object-cover hidden sm:block"
+                    muted
+                    playsInline
+                    controls
+                  >
+                    <source src={video.file_path} type="video/mp4" />
+                  </video>
+                </>
+              ) : (
+                <>
+                  <div className="w-full h-48 bg-black relative cursor-pointer overflow-hidden group">
+                    {video.thumbnail_path ? (
+                      <img
+                        src={video.thumbnail_path}
+                        alt="aperçu"
+                        className="w-full h-full object-cover sm:hidden"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-zinc-900 sm:hidden"></div>
+                    )}
 
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-  {currentVideos.map((video) => (
-    <div key={video.id} className="bg-zinc-800 rounded-2xl overflow-hidden shadow-xl transition transform hover:scale-105">
-      
-      {/* Abonné */}
-      {user.isSubscribed ? (
-        <>
-          {/* Mobile (miniature ou fallback vidéo) */}
-          {video.thumbnail_path ? (
-            <img
-              src={video.thumbnail_path}
-              alt={video.title}
-              className="w-full h-48 object-cover sm:hidden"
-              onClick={() => window.open(video.file_path, "_blank")}
-            />
-          ) : (
-            <video
-              className="w-full h-48 object-cover sm:hidden"
-              muted
-              playsInline
-              controls
-            >
-              <source src={video.file_path} type="video/mp4" />
-            </video>
-          )}
+                    <video
+                      src={video.file_path}
+                      muted
+                      playsInline
+                      preload="metadata"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-500 hidden sm:block blur-sm opacity-70"
+                    />
 
-          {/* Tablette / PC : vidéo normale */}
-          <video
-            className="w-full h-48 object-cover hidden sm:block"
-            muted
-            playsInline
-            controls
-          >
-            <source src={video.file_path} type="video/mp4" />
-          </video>
-        </>
-      ) : (
-        <>
-          {/* Bloc vidéo ou image pour les non abonnés */}
-          <div
-            className="w-full h-48 bg-black relative cursor-pointer overflow-hidden group"
-            onClick={handlePayPalPayment}
-          >
-            {/* Mobile : miniature visible */}
-            {video.thumbnail_path ? (
-              <img
-                src={video.thumbnail_path}
-                alt="aperçu"
-                className="w-full h-full object-cover sm:hidden"
-              />
-            ) : (
-              <div className="w-full h-full bg-zinc-900 sm:hidden"></div>
-            )}
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center px-4 text-center">
+                      <button
+                        onClick={user.isSubscribed ? () => window.open(video.file_path, "_blank") : handlePayPalPayment}
+                        className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-4 py-1 rounded-full text-sm sm:hidden"
+                      >
+                        🔓 Play
+                      </button>
+                      <span className="hidden sm:block text-yellow-400 font-bold text-sm">🔒 Aperçu</span>
+                      <span className="hidden sm:block text-yellow-100 text-xs mt-1">Clique pour débloquer le contenu complet</span>
+                    </div>
+                  </div>
+                </>
+              )}
 
-            {/* Tablette / PC : vidéo floutée */}
-            <video
-              src={video.file_path}
-              muted
-              playsInline
-              preload="metadata"
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-500 hidden sm:block blur-sm opacity-70"
-            />
-
-            {/* Overlay (visible sur mobile et PC) */}
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center px-4 text-center">
-              <span className="text-yellow-400 font-bold text-sm sm:text-base">🔒 Aperçu</span>
-              <span className="text-yellow-100 text-xs sm:text-sm mt-1">Clique pour débloquer le contenu complet</span>
+              <div className="p-4">
+                <h3 className="text-lg font-semibold mb-2 text-yellow-300">{video.title}</h3>
+                {!user.isSubscribed ? (
+                  <button
+                    onClick={handlePayPalPayment}
+                    className="w-full bg-yellow-500 text-black font-bold py-2 rounded-xl hover:bg-yellow-600"
+                  >
+                    🔒 Abonnement requis
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleDownload(video.file_path)}
+                    className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700"
+                  >
+                    📥 Télécharger
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        </>
-      )}
-
-      {/* Titre + bouton bas */}
-      <div className="p-4">
-        <h3 className="text-lg font-semibold mb-2 text-yellow-300">{video.title}</h3>
-        {!user.isSubscribed ? (
-          <button
-            onClick={handlePayPalPayment}
-            className="w-full bg-yellow-500 text-black font-bold py-2 rounded-xl hover:bg-yellow-600"
-          >
-            🔒 Abonnement requis
-          </button>
-        ) : (
-          <button
-            onClick={() => handleDownload(video.file_path)}
-            className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700"
-          >
-            📥 Télécharger
-          </button>
-        )}
-      </div>
-    </div>
-  ))}
-</div>
-
-
-
-
+          ))}
+        </div>
 
         <div className="flex justify-center items-center gap-4 mt-8">
           <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1} className="px-4 py-2 rounded bg-zinc-700 hover:bg-zinc-600 disabled:opacity-40">
@@ -286,7 +276,6 @@ export default function AuthPage() {
 
         {message && <p className="text-red-500 text-center mt-6 text-lg font-semibold">{message}</p>}
 
-        {/* Bloc promo 1XBET */}
         <div className="text-center text-sm text-white mt-12">
           🎁 <span className="font-bold text-yellow-400 animate-blink">BONUS EXCLUSIF 1XBET 24H</span> 🎁<br />
           👉 Cliquez ici et activez l'accès gratuit avec le code promo: <span className="text-yellow-400 font-bold">Bonnus</span><br />
