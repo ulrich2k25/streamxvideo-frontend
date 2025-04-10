@@ -18,7 +18,9 @@ const translations = {
     placeholder_email: "Email",
     placeholder_password: "Mot de passe",
 	logout_message: "Vous avez été déconnecté.",
-
+landing_title: "🔥 Groupe Telegram très chaud !",
+landing_subtitle: "Rejoins notre canal privé pour des vidéos sexy 100% gratuites et du contenu exclusif chaque jour.",
+join_now: "Accéder au canal maintenant",
   },
   en: {
     title: "Premium Videos",
@@ -38,7 +40,9 @@ const translations = {
     placeholder_email: "Email",
     placeholder_password: "Password",
 	logout_message: "You have been logged out.",
-
+landing_title: "🔥 Super Hot Telegram Group!",
+landing_subtitle: "Join our private channel for 100% free sexy videos and daily exclusive content.",
+join_now: "Join now",
   },
   de: {
     title: "Premium-Videos",
@@ -58,7 +62,9 @@ const translations = {
     placeholder_email: "E-Mail",
     placeholder_password: "Passwort",
 	logout_message: "Du wurdest abgemeldet.",
-
+landing_title: "🔥 Heißer Telegram-Kanal!",
+landing_subtitle: "Tritt unserem privaten Kanal bei – kostenlose sexy Videos & tägliche Inhalte.",
+join_now: "Jetzt beitreten",
   },
   es: {
     title: "Videos Premium",
@@ -78,7 +84,9 @@ const translations = {
     placeholder_email: "Correo electrónico",
     placeholder_password: "Contraseña",
 	logout_message: "Has cerrado sesión.",
-
+landing_title: "🔥 Grupo de Telegram muy caliente!",
+landing_subtitle: "Únete a nuestro canal privado para obtener vídeos sexys gratis y contenido exclusivo diario.",
+join_now: "Unirse ahora",
   },
   it: {
     title: "Video Premium",
@@ -98,7 +106,9 @@ const translations = {
    placeholder_email: "Email",
    placeholder_password: "Password",
    logout_message: "Sei stato disconnesso.",
-
+ landing_title: "🔥 Canale Telegram super hot!",
+landing_subtitle: "Unisciti al nostro canale privato per video sexy gratuiti e contenuti esclusivi ogni giorno.",
+join_now: "Unisciti ora",
 	
   }
 };
