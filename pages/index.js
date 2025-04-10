@@ -161,12 +161,14 @@ export default function AuthPage() {
             <input type="email" placeholder="Email" className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none" value={email} onChange={(e) => setEmail(e.target.value)} required />
             <input type="password" placeholder="Mot de passe" className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none" value={password} onChange={(e) => setPassword(e.target.value)} required />
             <button type="submit" className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded-xl">
-              {isLogin ? "Se connecter" : "S'inscrire"}
+              {isLogin ? t.login : t.signup}
+
             </button>
           </form>
 
           <button onClick={() => setIsLogin(!isLogin)} className="mt-4 text-sm text-zinc-400 underline text-center">
-            {isLogin ? "Pas encore inscrit ?" : "Déjà inscrit ?"}
+            {isLogin ? t.register_prompt : "Déjà inscrit ?"}
+
           </button>
 
           {message && <p className="text-red-500 text-center mt-4 font-semibold">{message}</p>}
@@ -266,12 +268,18 @@ export default function AuthPage() {
         {message && <p className="text-red-500 text-center mt-6 text-lg font-semibold">{message}</p>}
 
         <div className="text-center text-sm text-white mt-12">
-          🎁 <span className="font-bold text-yellow-400 animate-blink">BONUS EXCLUSIF 1XBET 24H</span> 🎁<br />
-          👉 Cliquez ici et activez l'accès gratuit avec le code promo: <span className="text-yellow-400 font-bold">Bonnus</span><br />
-          <a href="https://affpa.top/L?tag=d_451639m_97c_&site=451639&ad=97" target="_blank" rel="noopener noreferrer" className="inline-block mt-2 px-4 py-2 bg-yellow-500 text-black font-semibold rounded hover:bg-yellow-400 transition">
-            🎰 S'inscrire maintenant sur 1XBET
-          </a>
-        </div>
+  <p className="text-yellow-400 font-bold animate-blink">🎁 BONUS EXCLUSIF 1XBET 24H 🎁</p>
+  <p className="mt-1">{t.bonus_message}</p>
+  <a
+    href="https://affpa.top/L?tag=d_451639m_97c_&site=451639&ad=97"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block mt-2 px-4 py-2 bg-yellow-500 text-black font-semibold rounded hover:bg-yellow-400 transition"
+  >
+    🎰 {t.bonus_button}
+  </a>
+</div>
+
       </div>
 
       <footer className="mt-12 bg-zinc-950 border-t border-zinc-700 pt-6 pb-4 text-center text-sm text-zinc-400">
