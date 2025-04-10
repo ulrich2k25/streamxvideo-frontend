@@ -19,19 +19,23 @@ const t = translations[lang];
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden">
+      {/* Teaser video as background */}
       <video
-        src="https://myvideobucket2k25.s3.eu-north-1.amazonaws.com/videos/teaser1.mp4"
+        src="https://myvideobucket2k25.s3.eu-north-1.amazonaws.com/videos/videdo11.mp4"
         autoPlay
         muted
         loop
         playsInline
-        className="absolute w-full h-full object-cover blur-sm opacity-60 z-0"
+        className="absolute w-full h-full object-cover blur-sm opacity-70 z-0"
       />
       <div className="absolute inset-0 bg-black bg-opacity-60 z-0"></div>
 
-      <div className="z-10 max-w-xl mx-auto text-center px-6">
+      {/* Main content with overlay text */}
+      <div className="z-10 max-w-xl mx-auto text-center px-6 py-8">
         <h1 className="text-4xl sm:text-5xl font-bold text-yellow-400 mb-6">{t.landing_title}</h1>
-        <p className="text-lg text-zinc-200 mb-8">{t.landing_subtitle}</p>
+        <p className="text-lg sm:text-xl text-zinc-200 mb-8">{t.landing_subtitle}</p>
+
+        {/* Call to action button */}
         <a
           href="https://t.me/discussionsexe"
           target="_blank"
@@ -40,6 +44,11 @@ export default function LandingPage() {
         >
           👉 {t.join_now}
         </a>
+      </div>
+
+      {/* Footer with additional info or links */}
+      <div className="absolute bottom-0 w-full py-4 bg-black text-center text-zinc-400">
+        <p>StreamX Video | Exclusivité pour adultes 🔥</p>
       </div>
     </div>
   );
