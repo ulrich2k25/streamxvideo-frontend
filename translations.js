@@ -17,6 +17,8 @@ const translations = {
 	bonus_button: "S'inscrire maintenant sur 1XBET",
     placeholder_email: "Email",
     placeholder_password: "Mot de passe",
+	logout_message: "Vous avez été déconnecté.",
+
   },
   en: {
     title: "Premium Videos",
@@ -35,6 +37,8 @@ const translations = {
     bonus_button: "Register now on 1XBET",
     placeholder_email: "Email",
     placeholder_password: "Password",
+	logout_message: "You have been logged out.",
+
   },
   de: {
     title: "Premium-Videos",
@@ -53,6 +57,8 @@ const translations = {
     bonus_button: "Jetzt bei 1XBET registrieren",
     placeholder_email: "E-Mail",
     placeholder_password: "Passwort",
+	logout_message: "Du wurdest abgemeldet.",
+
   },
   es: {
     title: "Videos Premium",
@@ -71,6 +77,8 @@ const translations = {
     bonus_button: "Regístrate ahora en 1XBET",
     placeholder_email: "Correo electrónico",
     placeholder_password: "Contraseña",
+	logout_message: "Has cerrado sesión.",
+
   },
   it: {
     title: "Video Premium",
@@ -89,6 +97,8 @@ const translations = {
     bonus_button: "Iscriviti ora su 1XBET",
    placeholder_email: "Email",
    placeholder_password: "Password",
+   logout_message: "Sei stato disconnesso.",
+
 	
   }
 };

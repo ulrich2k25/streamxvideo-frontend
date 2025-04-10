@@ -80,12 +80,13 @@ export default function AuthPage() {
     }
   }, []);
 
-  useEffect(() => {
-    if (message && message.toLowerCase().includes("réussie")) {
-      const timer = setTimeout(() => setMessage(""), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
+useEffect(() => {
+  if (message) {
+    const timer = setTimeout(() => setMessage(""), 3000); // Tous les messages disparaissent après 5 secondes
+    return () => clearTimeout(timer);
+  }
+}, [message]);
+
 
   useEffect(() => {
     updateQueryParam(currentPage);
@@ -137,8 +138,9 @@ export default function AuthPage() {
 const handleLogout = () => {
   localStorage.removeItem("userSession");
   setUser(null);
-  setMessage("Vous avez été déconnecté.");
+  setMessage(t.logout_message);
 };
+
 
   if (!user) {
     const teaser = videos[teaserIndex];
@@ -190,11 +192,13 @@ const handleLogout = () => {
      {user && (
   <div className="flex justify-end mb-6">
     <button
-      onClick={handleLogout}
-      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-    >
-      {t.logout}
-    </button>
+  onClick={handleLogout}
+  className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold py-2 px-4 rounded-xl shadow-lg hover:from-yellow-500 hover:to-yellow-700 transition"
+>
+  <img src="https://cdn-icons-png.flaticon.com/512/1828/1828479.png" alt="Logout" className="w-5 h-5" />
+  {t.logout}
+</button>
+
   </div>
 )}
 
