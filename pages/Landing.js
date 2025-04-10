@@ -1,7 +1,7 @@
 // 📁 frontend/LandingPage.js
 
 import React from "react";
-import translations from "./translations";
+import translations from "../translations";
 
 const userLang = typeof navigator !== "undefined" ? navigator.language : "fr";
 const lang = userLang.startsWith("de")
