@@ -2,6 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import translations from "./translations";
+
+const userLang = typeof navigator !== "undefined" ? navigator.language : "fr";
+const lang = userLang.startsWith("de")
+  ? "de"
+  : userLang.startsWith("en")
+  ? "en"
+  : userLang.startsWith("es")
+  ? "es"
+  : userLang.startsWith("it")
+  ? "it"
+  : "fr";
+
+const t = translations[lang];
+
 
 const backendUrl = "https://streamxvideo-backend-production.up.railway.app";
 const SESSION_DURATION = 10 * 60 * 1000;
@@ -138,7 +153,8 @@ export default function AuthPage() {
         )}
         <div className="z-10 bg-zinc-900 bg-opacity-80 p-6 rounded-2xl shadow-2xl w-full max-w-md border border-yellow-500">
           <h1 className="text-3xl font-bold text-center mb-2 text-yellow-400">StreamX Video</h1>
-          <p className="text-center text-zinc-300 mb-4">Espace exclusif pour adultes. Connecte-toi ou inscris-toi.</p>
+         <p className="text-center text-zinc-300 mb-4">{t.teaserText}</p>
+
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <input type="email" placeholder="Email" className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none" value={email} onChange={(e) => setEmail(e.target.value)} required />
@@ -161,15 +177,19 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white px-4 py-8 flex flex-col justify-between">
       <div>
-        <h2 className="text-4xl font-bold mb-6 text-center text-yellow-400">🎬 Vidéos Premium</h2>
+       <h2 className="text-4xl font-bold mb-6 text-center text-yellow-400">🎬 {t.title}</h2>
+
 
         {!user.isSubscribed && (
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-6">
-            <button onClick={handlePayPalPayment} className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-xl shadow-lg transition">
-              🔐 Débloquer toutes les vidéos – 2€
+          <button onClick={handlePayPalPayment} className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-xl shadow-lg transition">
+            {t.payButton}
+ 
             </button>
+			
             <a href="https://t.me/streamxsupport1" target="_blank" rel="noreferrer" className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition">
-              📱 Payer via Mobile Money 
+              {t.mobilePay}
+
             </a>
           </div>
         )}
@@ -207,7 +227,9 @@ export default function AuthPage() {
                     <button className="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
                       ▶ <span>Play</span>
                     </button>
-                    <span className="text-yellow-100 text-xs sm:text-sm mt-1">Clique pour débloquer le contenu complet</span>
+                    <span className="text-yellow-100 text-xs sm:text-sm mt-1">{t.unlockNotice}
+                    </span>
+
                   </div>
                 </div>
               )}
@@ -215,11 +237,14 @@ export default function AuthPage() {
                 <h3 className="text-lg font-semibold mb-2 text-yellow-300">{video.title}</h3>
                 {!user.isSubscribed ? (
                   <button onClick={handlePayPalPayment} className="w-full bg-yellow-500 text-black font-bold py-2 rounded-xl hover:bg-yellow-600">
-                    🔒 Abonnement requis
+                    {t.subscriptionRequired}
+
                   </button>
                 ) : (
                   <button onClick={() => handleDownload(video.file_path)} className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700">
-                    📥 Télécharger
+                    {t.download}
+
+
                   </button>
                 )}
               </div>
