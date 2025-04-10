@@ -21,6 +21,7 @@ const translations = {
 landing_title: "🔥 Groupe Telegram très chaud !",
 landing_subtitle: "Rejoins notre canal privé pour des vidéos sexy 100% gratuites et du contenu exclusif chaque jour.",
 join_now: "Accéder au canal maintenant",
+visitSite: "Visitez le site",
   },
   en: {
     title: "Premium Videos",
@@ -43,6 +44,7 @@ join_now: "Accéder au canal maintenant",
 landing_title: "🔥 Super Hot Telegram Group!",
 landing_subtitle: "Join our private channel for 100% free sexy videos and daily exclusive content.",
 join_now: "Join now",
+ visitSite: "Visit the website",
   },
   de: {
     title: "Premium-Videos",
@@ -65,6 +67,7 @@ join_now: "Join now",
 landing_title: "🔥 Heißer Telegram-Kanal!",
 landing_subtitle: "Tritt unserem privaten Kanal bei – kostenlose sexy Videos & tägliche Inhalte.",
 join_now: "Jetzt beitreten",
+visitSite: "Besuche unsere Seite",
   },
   es: {
     title: "Videos Premium",
@@ -87,6 +90,7 @@ join_now: "Jetzt beitreten",
 landing_title: "🔥 Grupo de Telegram muy caliente!",
 landing_subtitle: "Únete a nuestro canal privado para obtener vídeos sexys gratis y contenido exclusivo diario.",
 join_now: "Unirse ahora",
+visitSite: "Visita el sitio",
   },
   it: {
     title: "Video Premium",
@@ -109,6 +113,7 @@ join_now: "Unirse ahora",
  landing_title: "🔥 Canale Telegram super hot!",
 landing_subtitle: "Unisciti al nostro canale privato per video sexy gratuiti e contenuti esclusivi ogni giorno.",
 join_now: "Unisciti ora",
+visitSite: "Visita il sito",
 	
   }
 };

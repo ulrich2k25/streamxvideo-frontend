@@ -48,11 +48,12 @@ export default function LandingPage() {
 
           {/* New Button to access home page directly */}
           <a
-            href="/"  // Redirection vers la page d'accueil de ton site
-            className="inline-block px-6 py-3 bg-blue-500 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-blue-600 transition"
-          >
-            🌐 Retour à l'accueil
-          </a>
+  href="/"
+  className="inline-block px-6 py-3 bg-blue-500 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-blue-600"
+>
+  🌐 {t.visit_site}
+</a>
+
         </div>
       </div>
 
