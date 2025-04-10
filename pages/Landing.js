@@ -51,7 +51,7 @@ export default function LandingPage() {
   href="/"
   className="inline-block px-6 py-3 bg-blue-500 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-blue-600"
 >
-  🌐 {t.visit_site}
+  🌐 {t.visitSite}
 </a>
 
         </div>
