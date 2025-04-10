@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import translations from "./translations";
+import translations from "../translations";
+
 
 const userLang = typeof navigator !== "undefined" ? navigator.language : "fr";
 const lang = userLang.startsWith("de")
