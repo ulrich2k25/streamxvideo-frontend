@@ -4,6 +4,7 @@ const translations = {
   fr: {
     title: "Vidéos Premium",
     login: "Se connecter",
+	logout: "🔓 Se déconnecter",
 	register_prompt: "Pas encore inscrit ?",
     signup: "S'inscrire",
     payButton: "🔐 Débloquer toutes les vidéos – 2€",
@@ -14,11 +15,13 @@ const translations = {
     unlockNotice: "Clique pour débloquer le contenu complet",
 	bonus_message: "Cliquez ici et activez l'accès gratuit avec le code promo : Bonnus",
 	bonus_button: "S'inscrire maintenant sur 1XBET",
-
+    placeholder_email: "Email",
+    placeholder_password: "Mot de passe",
   },
   en: {
     title: "Premium Videos",
     login: "Login",
+	logout: "🔓 Logout",
 	register_prompt: "Not registered yet?",
 
     signup: "Sign up",
@@ -30,11 +33,13 @@ const translations = {
     unlockNotice: "Click to unlock full content",
 	bonus_message: "Click here and activate free access with promo code: Bonnus",
     bonus_button: "Register now on 1XBET",
-
+    placeholder_email: "Email",
+    placeholder_password: "Password",
   },
   de: {
     title: "Premium-Videos",
     login: "Einloggen",
+	logout: "🔓 Abmelden",
 	register_prompt: "Noch nicht registriert?",
 
     signup: "Registrieren",
@@ -46,11 +51,13 @@ const translations = {
     unlockNotice: "Klicken, um den vollständigen Inhalt freizuschalten",
 	  bonus_message: "Klicke hier und aktiviere den kostenlosen Zugang mit dem Promo-Code: Bonnus",
     bonus_button: "Jetzt bei 1XBET registrieren",
-
+    placeholder_email: "E-Mail",
+    placeholder_password: "Passwort",
   },
   es: {
     title: "Videos Premium",
     login: "Iniciar sesión",
+	logout: "🔓 Cerrar sesión",
 	register_prompt: "¿Aún no estás registrado?",
 	
     signup: "Registrarse",
@@ -62,11 +69,13 @@ const translations = {
     unlockNotice: "Haz clic para desbloquear el contenido completo",
     bonus_message: "Haz clic aquí y activa el acceso gratuito con el código promocional: Bonnus",
     bonus_button: "Regístrate ahora en 1XBET",
-
+    placeholder_email: "Correo electrónico",
+    placeholder_password: "Contraseña",
   },
   it: {
     title: "Video Premium",
     login: "Accedi",
+	logout: "🔓 Disconnettersi",
  register_prompt: "Non sei ancora registrato?",
 
     signup: "Registrati",
@@ -78,7 +87,8 @@ const translations = {
     unlockNotice: "Clicca per sbloccare il contenuto completo",
 	   bonus_message: "Clicca qui e attiva l'accesso gratuito con il codice promozionale: Bonnus",
     bonus_button: "Iscriviti ora su 1XBET",
-
+   placeholder_email: "Email",
+   placeholder_password: "Password",
 	
   }
 };

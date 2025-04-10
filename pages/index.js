@@ -134,6 +134,11 @@ export default function AuthPage() {
       alert("❌ Erreur de téléchargement");
     }
   };
+const handleLogout = () => {
+  localStorage.removeItem("userSession");
+  setUser(null);
+  setMessage("Vous avez été déconnecté.");
+};
 
   if (!user) {
     const teaser = videos[teaserIndex];
@@ -158,8 +163,8 @@ export default function AuthPage() {
 
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-            <input type="email" placeholder="Email" className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            <input type="password" placeholder="Mot de passe" className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <input type="email" placeholder={t.placeholder_email} className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input type="password" placeholder={t.placeholder_password} className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none" value={password} onChange={(e) => setPassword(e.target.value)} required />
             <button type="submit" className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded-xl">
               {isLogin ? t.login : t.signup}
 
@@ -181,6 +186,17 @@ export default function AuthPage() {
     <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white px-4 py-8 flex flex-col justify-between">
       <div>
        <h2 className="text-4xl font-bold mb-6 text-center text-yellow-400">🎬 {t.title}</h2>
+	   
+     {user && (
+  <div className="flex justify-end mb-6">
+    <button
+      onClick={handleLogout}
+      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+    >
+      {t.logout}
+    </button>
+  </div>
+)}
 
 
         {!user.isSubscribed && (
