@@ -35,15 +35,25 @@ export default function LandingPage() {
         <h1 className="text-4xl sm:text-5xl font-bold text-yellow-400 mb-6">{t.landing_title}</h1>
         <p className="text-lg sm:text-xl text-zinc-200 mb-8">{t.landing_subtitle}</p>
 
-        {/* Call to action button */}
-        <a
-          href="https://t.me/discussionsexe"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-block px-6 py-3 bg-yellow-500 text-black font-bold text-lg rounded-xl shadow-lg hover:bg-yellow-600 transition"
-        >
-          👉 {t.join_now}
-        </a>
+        {/* Call to action buttons */}
+        <div className="flex justify-center gap-4 mb-6">
+          <a
+            href="https://t.me/discussionsexe"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-block px-6 py-3 bg-yellow-500 text-black font-bold text-lg rounded-xl shadow-lg hover:bg-yellow-600 transition"
+          >
+            👉 {t.join_now}
+          </a>
+
+          {/* New Button to access home page directly */}
+          <a
+            href="/"  // Redirection vers la page d'accueil de ton site
+            className="inline-block px-6 py-3 bg-blue-500 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-blue-600 transition"
+          >
+            🌐 Retour à l'accueil
+          </a>
+        </div>
       </div>
 
       {/* Footer with additional info or links */}
