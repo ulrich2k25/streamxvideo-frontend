@@ -1,9 +1,7 @@
-// 📁 frontend/LandingPage.js
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import translations from "../translations";
 
-// Détection automatique de la langue
+// Détection de la langue
 const userLang = typeof navigator !== "undefined" ? navigator.language : "fr";
 const lang = userLang.startsWith("de")
   ? "de"
@@ -18,56 +16,46 @@ const lang = userLang.startsWith("de")
 const t = translations[lang];
 
 export default function LandingPage() {
-  const videoList = [
+  const videoSources = [
     "video10.mp4",
     "Video44.mp4",
     "Video60.mp4",
     "Video66.mp4",
   ];
 
-  const [videoCount, setVideoCount] = useState(4);
+  const [positions, setPositions] = useState([0, 1, 2, 3]);
 
-  // Détection de la taille de l’écran (mobile < 768px)
+  // 🔁 Change les positions toutes les 5s
   useEffect(() => {
-    const updateCount = () => {
-      setVideoCount(window.innerWidth < 768 ? 2 : 4);
-    };
+    const interval = setInterval(() => {
+      const shuffled = [...positions].sort(() => 0.5 - Math.random());
+      setPositions(shuffled);
+    }, 5000);
 
-    updateCount(); // au chargement
-    window.addEventListener("resize", updateCount);
-    return () => window.removeEventListener("resize", updateCount);
-  }, []);
+    return () => clearInterval(interval);
+  }, [positions]);
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden">
-      {/* 🔁 Affichage de vidéos floutées en arrière-plan */}
-      {videoList.slice(0, videoCount).map((filename, i) => (
-        <video
-          key={i}
-          ref={(el) => {
-            if (el) {
-              el.onTimeUpdate = () => {
-                if (el.currentTime >= 5) {
-                  el.style.transition = "opacity 2s ease-out";
-                  el.style.opacity = 0;
-                  el.pause();
-                }
-              };
-            }
-          }}
-          src={`https://myvideobucket2k25.s3.eu-north-1.amazonaws.com/videos/${filename}`}
-          autoPlay
-          muted
-          playsInline
-          loop={false}
-          className="absolute w-full h-full object-cover blur-sm opacity-40 z-0"
-        />
-      ))}
+      {/* 🔁 Grille responsive avec changement aléatoire des positions */}
+      <div className="absolute w-full h-full grid grid-cols-1 sm:grid-cols-2 grid-rows-4 sm:grid-rows-2 z-0 transition-all duration-1000">
+        {positions.map((pos, index) => (
+          <video
+            key={index}
+            src={`https://myvideobucket2k25.s3.eu-north-1.amazonaws.com/videos/${videoSources[pos]}`}
+            autoPlay
+            muted
+            playsInline
+            loop
+            className="w-full h-full object-cover blur-sm opacity-40 transition-all duration-1000"
+          />
+        ))}
+      </div>
 
-      {/* Overlay sombre au-dessus des vidéos */}
+      {/* Overlay sombre */}
       <div className="absolute inset-0 bg-black bg-opacity-60 z-0" />
 
-      {/* Contenu principal */}
+      {/* Texte + boutons */}
       <div className="z-10 max-w-xl mx-auto text-center px-6 py-8">
         <h1 className="text-4xl sm:text-5xl font-bold text-yellow-400 mb-6">
           {t.landing_title}
@@ -76,7 +64,6 @@ export default function LandingPage() {
           {t.landing_subtitle}
         </p>
 
-        {/* Boutons d’action */}
         <div className="flex justify-center gap-4 mb-6">
           <a
             href="https://t.me/discussionsexe"
@@ -86,7 +73,6 @@ export default function LandingPage() {
           >
             👉 {t.join_now}
           </a>
-
           <a
             href="/"
             className="inline-block px-6 py-3 bg-blue-500 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-blue-600 transition"
@@ -96,7 +82,7 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Pied de page */}
+      {/* Footer */}
       <div className="absolute bottom-0 w-full py-4 bg-black text-center text-zinc-400">
         <p>StreamX Video | Exclusivité pour adultes 🔥</p>
       </div>
