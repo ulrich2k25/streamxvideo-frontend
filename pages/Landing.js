@@ -21,7 +21,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden">
       {/* Teaser video as background */}
       <video
-        src="https://myvideobucket2k25.s3.eu-north-1.amazonaws.com/videos/video10.mp4"
+        src="https://myvideobucket2k25.s3.eu-north-1.amazonaws.com/videos/Video50.mp4"
         autoPlay
         muted
         loop
