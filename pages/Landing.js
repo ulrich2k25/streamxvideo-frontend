@@ -48,8 +48,7 @@ export default function LandingPage() {
             playsInline
             loop
             className="w-full h-full object-cover blur-sm opacity-60 brightness-125 transition-all duration-1000"
-
-          />
+             />
         ))}
       </div>
 
@@ -90,4 +89,3 @@ export default function LandingPage() {
     </div>
   );
 }
-voila 
