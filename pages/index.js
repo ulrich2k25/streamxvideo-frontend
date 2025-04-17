@@ -1,33 +1,17 @@
-// 📁 AuthPage.js — version finale complète
+// 📁 AuthPage.js — version corrigée avec paiement PayDunya
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import translations from "../translations";
 
-
 const userLang = typeof navigator !== "undefined" ? navigator.language : "fr";
-const lang = userLang.startsWith("de")
-  ? "de"
-  : userLang.startsWith("en")
-  ? "en"
-  : userLang.startsWith("es")
-  ? "es"
-  : userLang.startsWith("it")
-  ? "it"
-  : "fr";
-
+const lang = userLang.startsWith("de") ? "de" : userLang.startsWith("en") ? "en" : userLang.startsWith("es") ? "es" : userLang.startsWith("it") ? "it" : "fr";
 const t = translations[lang];
-
 
 const backendUrl = "https://streamxvideo-backend-production.up.railway.app";
 const SESSION_DURATION = 10 * 60 * 1000;
-
 const isClient = typeof window !== "undefined";
-const useSafeQuery = () => {
-  if (!isClient) return new URLSearchParams();
-  return new URLSearchParams(window.location.search);
-};
-
+const useSafeQuery = () => (isClient ? new URLSearchParams(window.location.search) : new URLSearchParams());
 const updateQueryParam = (page) => {
   if (typeof window !== "undefined") {
     const url = new URL(window.location);
@@ -48,7 +32,6 @@ export default function AuthPage() {
 
   const initialPage = parseInt(query.get("page")) || 1;
   const [currentPage, setCurrentPage] = useState(initialPage);
-
   const videosPerPage = 20;
   const indexOfLastVideo = currentPage * videosPerPage;
   const indexOfFirstVideo = indexOfLastVideo - videosPerPage;
@@ -62,12 +45,10 @@ export default function AuthPage() {
         setTeaserIndex(Math.floor(Math.random() * res.data.length));
       })
       .catch(() => setMessage("Erreur lors du chargement des vidéos."));
-
     const msg = query.get("message");
     const emailParam = query.get("email");
     if (msg) setMessage(decodeURIComponent(msg));
     if (emailParam) setEmail(decodeURIComponent(emailParam));
-
     const saved = localStorage.getItem("userSession");
     if (saved) {
       const session = JSON.parse(saved);
@@ -80,13 +61,12 @@ export default function AuthPage() {
     }
   }, []);
 
-useEffect(() => {
-  if (message) {
-    const timer = setTimeout(() => setMessage(""), 3000); // Tous les messages disparaissent après 5 secondes
-    return () => clearTimeout(timer);
-  }
-}, [message]);
-
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
 
   useEffect(() => {
     updateQueryParam(currentPage);
@@ -99,10 +79,7 @@ useEffect(() => {
       if (data.user) {
         setUser(data.user);
         setMessage(isLogin ? "Connexion réussie !" : "Inscription réussie !");
-        const sessionData = {
-          user: data.user,
-          expiresAt: Date.now() + SESSION_DURATION,
-        };
+        const sessionData = { user: data.user, expiresAt: Date.now() + SESSION_DURATION };
         localStorage.setItem("userSession", JSON.stringify(sessionData));
       } else {
         setMessage("Erreur inconnue");
@@ -121,6 +98,16 @@ useEffect(() => {
     }
   };
 
+  const handleMobileMoneyPayment = async () => {
+    try {
+      const { data } = await axios.post(`${backendUrl}/api/payments/paydunya`, { email });
+      if (data.url) window.location.href = data.url;
+      else setMessage("Erreur lors de la création du paiement Mobile Money.");
+    } catch {
+      setMessage("❌ Paiement Mobile Money échoué.");
+    }
+  };
+
   const handleDownload = async (filePath) => {
     if (!user?.isSubscribed) return alert("Vous devez être abonné pour télécharger.");
     try {
@@ -135,12 +122,12 @@ useEffect(() => {
       alert("❌ Erreur de téléchargement");
     }
   };
-const handleLogout = () => {
-  localStorage.removeItem("userSession");
-  setUser(null);
-  setMessage(t.logout_message);
-};
 
+  const handleLogout = () => {
+    localStorage.removeItem("userSession");
+    setUser(null);
+    setMessage(t.logout_message);
+  };
 
   if (!user) {
     const teaser = videos[teaserIndex];
@@ -148,36 +135,23 @@ const handleLogout = () => {
       <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white flex flex-col items-center justify-center px-4 py-10 relative">
         {teaser && (
           <>
-            <video
-              src={teaser.file_path}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover blur-sm brightness-110 contrast-110 opacity-50 z-0"
-            />
+            <video src={teaser.file_path} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover blur-sm brightness-110 contrast-110 opacity-50 z-0" />
             <div className="absolute inset-0 bg-black bg-opacity-60 z-0"></div>
           </>
         )}
         <div className="z-10 bg-zinc-900 bg-opacity-80 p-6 rounded-2xl shadow-2xl w-full max-w-md border border-yellow-500">
           <h1 className="text-3xl font-bold text-center mb-2 text-yellow-400">StreamX Video</h1>
-         <p className="text-center text-zinc-300 mb-4">{t.teaserText}</p>
-
-
+          <p className="text-center text-zinc-300 mb-4">{t.teaserText}</p>
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <input type="email" placeholder={t.placeholder_email} className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none" value={email} onChange={(e) => setEmail(e.target.value)} required />
             <input type="password" placeholder={t.placeholder_password} className="px-4 py-2 rounded-xl bg-zinc-800 border border-zinc-700 focus:outline-none" value={password} onChange={(e) => setPassword(e.target.value)} required />
             <button type="submit" className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 rounded-xl">
               {isLogin ? t.login : t.signup}
-
             </button>
           </form>
-
           <button onClick={() => setIsLogin(!isLogin)} className="mt-4 text-sm text-zinc-400 underline text-center">
             {isLogin ? t.register_prompt : "Déjà inscrit ?"}
-
           </button>
-
           {message && <p className="text-red-500 text-center mt-4 font-semibold">{message}</p>}
         </div>
       </div>
@@ -187,35 +161,29 @@ const handleLogout = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black to-zinc-900 text-white px-4 py-8 flex flex-col justify-between">
       <div>
-       <h2 className="text-4xl font-bold mb-6 text-center text-yellow-400">🎬 {t.title}</h2>
-	   
-     {user && (
-  <div className="flex justify-end mb-6">
-    <button
-  onClick={handleLogout}
-  className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold py-2 px-4 rounded-xl shadow-lg hover:from-yellow-500 hover:to-yellow-700 transition"
->
-  <img src="https://cdn-icons-png.flaticon.com/512/1828/1828479.png" alt="Logout" className="w-5 h-5" />
-  {t.logout}
-</button>
+        <h2 className="text-4xl font-bold mb-6 text-center text-yellow-400">🎬 {t.title}</h2>
 
-  </div>
-)}
-
+        {user && (
+          <div className="flex justify-end mb-6">
+            <button onClick={handleLogout} className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold py-2 px-4 rounded-xl shadow-lg hover:from-yellow-500 hover:to-yellow-700 transition">
+              <img src="https://cdn-icons-png.flaticon.com/512/1828/1828479.png" alt="Logout" className="w-5 h-5" />
+              {t.logout}
+            </button>
+          </div>
+        )}
 
         {!user.isSubscribed && (
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-6">
-          <button onClick={handlePayPalPayment} className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-xl shadow-lg transition">
-            {t.payButton}
- 
+            <button onClick={handlePayPalPayment} className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-xl shadow-lg transition">
+              {t.payButton}
             </button>
-			
-            <a href="https://t.me/streamxsupport1" target="_blank" rel="noreferrer" className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition">
+            <button onClick={handleMobileMoneyPayment} className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition">
               {t.mobilePay}
-
-            </a>
+            </button>
           </div>
         )}
+
+        
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
           {currentVideos.map((video) => (
@@ -310,7 +278,7 @@ const handleLogout = () => {
             <button onClick={handlePayPalPayment} title="Payer avec PayPal" className="focus:outline-none">
               <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal" className="h-6 hover:scale-110 transition duration-200 cursor-pointer" />
             </button>
-            <a href="https://t.me/streamxsupport1" target="_blank" rel="noreferrer" title="Mobile Money">
+            <a href="https://t.me/streamxsupport1" target="_blank" rel="noreferrer" title="Support Telegram">
               <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" className="h-6 hover:scale-110 hover:drop-shadow-[0_0_10px_#facc15] transition duration-200" />
             </a>
           </div>
