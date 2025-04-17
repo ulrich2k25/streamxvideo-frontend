@@ -181,12 +181,11 @@ export default function AuthPage() {
             <button onClick={handlePayPalPayment} className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-xl shadow-lg transition">
               {t.payButton}
             </button>
-            <button onClick={handleNewPayDunyaPayment} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold w-full mt-4"
->
-  📱 Payer avec Mobile Money
-</button>
+			<button onClick={handleNewPayDunyaPayment} className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition">
+  {t.mobilePay}
+        </button>
 
-          </div>
+      </div>
         )}
 
         
