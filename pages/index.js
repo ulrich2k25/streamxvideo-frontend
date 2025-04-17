@@ -100,7 +100,8 @@ export default function AuthPage() {
 
  const handleNewPayDunyaPayment = async () => {
   try {
-    const { data } = await axios.post(`${backendUrl}/api/paydunya/payment`, { email });
+    const { data } = await axios.post(`${backendUrl}/api/payments/paydunya`, { email });
+
     if (data.url) {
       window.location.href = data.url;
     } else {
@@ -182,7 +183,7 @@ export default function AuthPage() {
               {t.payButton}
             </button>
 			<button onClick={handleNewPayDunyaPayment} className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition">
-  {t.mobilePay}
+          {t.mobilePay}
         </button>
 
       </div>
