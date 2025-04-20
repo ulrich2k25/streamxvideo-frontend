@@ -179,7 +179,7 @@ const handleCryptoPayment = async () => {
             <button onClick={handlePayPalPayment} className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-xl shadow-lg transition">
               {t.payButton}
             </button>
-             <button onClick={handleCryptoPayment} className="block w-full max-w-xs mx-auto bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-700 text-black font-extrabold text-lg tracking-wide uppercase px-6 py-3 rounded-2xl shadow-2xl hover:scale-105 hover:shadow-yellow-500/50 hover:brightness-110 transition-all duration-300 text-center">
+           <button onClick={handleCryptoPayment} className="w-full bg-gradient-to-r from-yellow-300 via-yellow-500 to-orange-500 text-black font-bold text-base px-6 py-3 mt-3 rounded-xl shadow-lg uppercase tracking-wide hover:brightness-110 hover:scale-105 transition duration-300">
             🔒 {t.cryptoPay || "Payer en Crypto (BTC, USDT...)"}
             </button>
              </div>
