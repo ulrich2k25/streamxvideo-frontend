@@ -98,20 +98,17 @@ export default function AuthPage() {
     }
   };
 
- const handleNewPayDunyaPayment = async () => {
+const handleCryptoPayment = async () => {
   try {
-    const { data } = await axios.post(`${backendUrl}/api/payments/paydunya`, { email });
-
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      setMessage("⚠️ Erreur : lien de paiement non généré.");
-    }
-  } catch (error) {
-    console.error("Erreur PayDunya :", error);
-    setMessage("❌ Paiement Mobile Money échoué.");
+    const { data } = await axios.post(`${backendUrl}/api/payments/crypto`, {
+      email: user.email
+    });
+    if (data.url) window.location.href = data.url;
+  } catch (err) {
+    alert("❌ Paiement crypto échoué");
   }
 };
+
 
   const handleDownload = async (filePath) => {
     if (!user?.isSubscribed) return alert("Vous devez être abonné pour télécharger.");
@@ -182,12 +179,11 @@ export default function AuthPage() {
             <button onClick={handlePayPalPayment} className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-6 py-3 rounded-xl shadow-lg transition">
               {t.payButton}
             </button>
-			<button onClick={handleNewPayDunyaPayment} className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition">
-          {t.mobilePay}
-        </button>
-
-      </div>
-        )}
+             <button onClick={handleCryptoPayment} className="block w-full max-w-xs mx-auto bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-700 text-black font-extrabold text-lg tracking-wide uppercase px-6 py-3 rounded-2xl shadow-2xl hover:scale-105 hover:shadow-yellow-500/50 hover:brightness-110 transition-all duration-300 text-center">
+            🔒 {t.cryptoPay || "Payer en Crypto (BTC, USDT...)"}
+            </button>
+             </div>
+               )}
 
         
 
